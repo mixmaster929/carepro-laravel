@@ -361,7 +361,17 @@ Route::group(['middleware'=>['candidate'],'prefix' => 'candidate', 'as' => 'cand
     Route::get('applications','HomeController@applications')->name('applications');
     Route::get('interviews','HomeController@interviews')->name('interviews');
     Route::get('viewInterview','HomeController@viewInterview')->name('view-interview');
+    
     Route::get('placements','HomeController@placements')->name('placements');
+    Route::get('placements/{employment}','HomeController@view')->name('view-placement');
+    Route::get('placement-comments/{employment}','HomeController@comments')->name('placements.comments');
+    Route::post('placement-comments/{employment}','HomeController@addComment')->name('placements.add-comment');
+    Route::get('placement-comment/download-attachment/{employmentCommentAttachment}','HomeController@downloadAttachment')->name('placement-comments.download-attachment');
+    Route::get('placement-comment/download-attachments/{employmentComment}','HomeController@downloadAttachments')->name('placement-comments.download-attachments');
+    Route::post('placement-comment/upload/{id}','HomeController@upload')->name('placement-comments.upload');
+    Route::post('placement-comment/remove-upload/{id}','HomeController@removeUpload')->name('placement-comments.remove-upload');
+
+
     Route::get('tests','TestController@index')->name('tests');
     Route::get('test/{test}','TestController@start')->name('tests.start');
     Route::post('test/{userTest}','TestController@processTest')->name('tests.process');

@@ -4,6 +4,7 @@
 /vendor
 /public
 /node_modules
+/storage
 /.pnp
 .pnp.js
 

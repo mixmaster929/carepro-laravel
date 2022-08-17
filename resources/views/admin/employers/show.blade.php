@@ -67,10 +67,10 @@
 
 
                                         <div class="row">
-                                        <div class="col-md-6 {{ $errors->has('gender') ? 'has-error' : ''}}">
-                                            <label for="gender" class="control-label">@lang('site.gender')</label>
-                                            <div>{{ gender($employer->employer->gender) }}</div>
-                                        </div>
+                                            <div class="col-md-6 {{ $errors->has('gender') ? 'has-error' : ''}}">
+                                                <label for="gender" class="control-label">@lang('site.gender')</label>
+                                                <div>{{ gender($employer->employer->gender) }}</div>
+                                            </div>
                                             <div class="col-md-6 {{ $errors->has('active') ? 'has-error' : ''}}">
                                                 <label for="active" class="control-label">@lang('site.active')</label>
                                                 <div>{{ boolToString($employer->employer->active) }}</div>

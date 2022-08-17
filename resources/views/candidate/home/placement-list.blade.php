@@ -7,6 +7,7 @@
             <th>@lang('site.start-date')</th><th>@lang('site.end-date')</th>
             <th>@lang('site.salary')</th>
             <th>@lang('site.active')</th>
+            <th>@lang('site.actions')</th>
         </tr>
         </thead>
         <tbody>
@@ -21,6 +22,9 @@
                 </td>
                 <td>{{ price($item->salary) }}</td>
                 <td>{{ boolToString($item->active) }}</td>
+                <td>
+                    <a class="btn btn-primary rounded" href="{{ route('candidate.view-placement',['employment'=>$item->id]) }}"><i class="fa fa-eye"></i> @lang('site.view')</a>
+                </td>
             </tr>
         @endforeach
         </tbody>
