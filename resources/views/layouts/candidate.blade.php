@@ -157,7 +157,7 @@
     </div><!-- az-content-body -->
     <div class="az-footer ht-40">
         <div class="container-fluid pd-t-0-f ht-100p">
-            <span>&copy; {{ date('Y') }} {{ setting('general_site_name') }}</span>
+            <span>&copy; {{ date('Y') }} {{ setting('general_site_name') }}. All rights reserved. Powered by UXUI.nl</span><p><br>
         </div><!-- container -->
     </div><!-- az-footer -->
 </div><!-- az-content -->
@@ -178,7 +178,6 @@
 
 
 @yield('footer')
-{!!  setting('general_footer_scripts')  !!}
 </body>
 
 </html>

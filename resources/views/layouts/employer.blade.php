@@ -24,6 +24,12 @@
     <link href="{{ asset('themes/azia/lib/flag-icon-css/css/flag-icon.min.css') }}" rel="stylesheet">
     <link href="{{ asset('themes/azia/lib/jqvmap/jqvmap.min.css') }}" rel="stylesheet">
 
+    <link rel="stylesheet" href="{{ asset('themes/argonpro/assets/vendor/nucleo/css/nucleo.css') }}" type="text/css">
+    <link rel="stylesheet" href="{{ asset('themes/argonpro/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css') }}" type="text/css">
+    
+    <link href="{{ asset('themes/argon/assets/js/plugins/bootstrap/dist/css/bootstrap.min.css') }}" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ asset('themes/argonpro/assets/css/argon.min.css?v=1.1.0') }}" type="text/css">
+
     <!-- azia CSS -->
     <link rel="stylesheet" href="{{ asset('themes/azia/css/azia.css') }}">
     <link href="{{ asset('css/fix.css') }}" rel="stylesheet" />
@@ -64,10 +70,15 @@
                     <li class="nav-sub-item"><a href="{{ route('profiles') }}" class="nav-sub-link">@lang('site.browse-profiles')</a></li>
                     <li class="nav-sub-item"><a href="{{ route('order-forms') }}" class="nav-sub-link">@lang('site.create-order')</a></li>
                     <li class="nav-sub-item"><a href="{{ route('employer.orders') }}" class="nav-sub-link">@lang('site.my-orders')</a></li>
-
                 </ul>
             </li><!-- nav-item -->
-
+            <li class="nav-item">
+                <a href="#" class="nav-link with-sub"><i class="fa fa-clipboard-list"></i>&nbsp; @lang('site.vacancies')</a>
+                <ul class="nav-sub">
+                    <li class="nav-sub-item"><a href="{{ route('employer.vacancies.index') }}" class="nav-sub-link">@lang('site.view-vacancies')</a></li>
+                    <li class="nav-sub-item"><a href="{{ route('employer.vacancies.create') }}" class="nav-sub-link">@lang('site.create-vacancy')</a></li>
+                </ul>
+            </li><!-- nav-item -->
             <li class="nav-item">
                 <a href="{{ route('user.billing.invoices') }}" class="nav-link"><i class="fa fa-file-invoice-dollar"></i>&nbsp; @lang('site.invoices')</a>
             </li><!-- nav-item -->
@@ -167,7 +178,7 @@
     </div><!-- az-content-body -->
     <div class="az-footer ht-40">
         <div class="container-fluid pd-t-0-f ht-100p">
-            <span>&copy; {{ date('Y') }} {{ setting('general_site_name') }}</span>
+            <span>&copy; {{ date('Y') }} {{ setting('general_site_name') }}. All rights reserved. Powered by UXUI.nl</span><p><br>
         </div><!-- container -->
     </div><!-- az-footer -->
 </div><!-- az-content -->
@@ -187,7 +198,6 @@
 
 
 @yield('footer')
-{!!  setting('general_footer_scripts')  !!}
 </body>
 
 </html>

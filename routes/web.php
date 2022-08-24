@@ -350,6 +350,20 @@ Route::group(['middleware'=>['employer'],'prefix' => 'employer', 'as' => 'employ
     Route::get('profile','ProfileController@profile')->name('profile');
     Route::post('update-profile','ProfileController@update')->name('save-profile');
 
+    Route::resource('vacancies', 'VacanciesController')->except(['destroy']);
+
+    Route::get('candidates/search','CandidatesController@search')->name('candidates.search');
+
+    Route::get('application-records/{vacancy}','ApplicationsController@index')->name('applications.index');
+    Route::get('shortlist-application/{application}','ApplicationsController@shortlist')->name('applications.shortlist');
+
+    Route::get('candidates/test-results/{user}','CandidatesController@tests')->name('candidates.tests');
+    Route::get('view-result/{userTest}','CandidatesController@results')->name('tests.results');
+
+    Route::put('applications/allow/{id}','ApplicationsController@allow')->name('applications.allow');
+    Route::put('applications/deny/{id}','ApplicationsController@deny')->name('applications.deny');
+    // Route::resource('candidates', 'CandidatesController');
+
 });
 
 Route::group(['middleware'=>['candidate'],'prefix' => 'candidate', 'as' => 'candidate.','namespace'=>'Candidate'],function() {

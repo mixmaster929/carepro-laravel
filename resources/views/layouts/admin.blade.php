@@ -19,10 +19,10 @@
     <!-- Page plugins -->
     <!-- Argon CSS -->
         <link href="{{ asset('themes/argon/assets/js/plugins/bootstrap/dist/css/bootstrap.min.css') }}" rel="stylesheet" />
-    <link rel="stylesheet" href="{{ asset('themes/argonpro/assets/css/argon.min.css?v=1.1.0') }}" type="text/css">
+        <link rel="stylesheet" href="{{ asset('themes/argonpro/assets/css/argon.min.css?v=1.1.0') }}" type="text/css">
 
         <link href="{{ asset('css/admin.css') }}" rel="stylesheet" />
-    <link href="{{ asset('css/fix.css') }}" rel="stylesheet" />
+        <link href="{{ asset('css/fix.css') }}" rel="stylesheet" />
 
         @yield('header')
 </head>
