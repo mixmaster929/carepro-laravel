@@ -17,6 +17,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
 use ParseCsv\Csv;
+use Illuminate\Support\Facades\Log;
+
 
 class EmployersController extends Controller
 {
@@ -378,6 +380,7 @@ class EmployersController extends Controller
 
 
     public function search(Request $request){
+        Log::info($request);
 
         $keyword = $request->get('term');
 
@@ -385,17 +388,22 @@ class EmployersController extends Controller
             return response()->json([]);
         }
 
-       // $employers = User::where('role_id',2)->has('employer')->whereRaw("match(name,email,telephone) against (? IN NATURAL LANGUAGE MODE)", [$keyword])->limit(1000)->get();
-        $employers = User::where('role_id',2)->has('employer')->where(function($query) use($keyword){
-            $query->where('name','LIKE','%'.$keyword.'%')->orWhere('email','LIKE','%'.$keyword.'%')->orWhere('telephone','LIKE','%'.$keyword.'%');
-        })->limit(1000)->get();
+        $employers = User::where('role_id',2)->where(function($query) use($keyword){
+            $query->whereHas('employer', function (Builder $query) use ($keyword) {
+                })->orWhere(function($query) use($keyword){
+                    $query->where('name','LIKE','%'.$keyword.'%')->orWhere('email','LIKE','%'.$keyword.'%')->orWhere('telephone','LIKE','%'.$keyword.'%');
+                });
+        })->limit(500)->get();
 
-     //   ->where('value','LIKE','%'.$params['custom_field'].'%')
         $formattedUsers = [];
 
         foreach($employers as $employer){
             if($request->get('format')=='number'){
                 $formattedUsers[] = ['id'=>$employer->id,'text'=>"{$employer->name} ({$employer->telephone})"];
+            }
+            elseif($request->get('format')=='candidate_id'){
+                $formattedUsers[] = ['id'=>$candidate->candidate->id,'text'=>"{$candidate->name} <{$candidate->email}>"];
+
             }
             else{
                 $formattedUsers[] = ['id'=>$employer->id,'text'=>"{$employer->name} <{$employer->email}>"];

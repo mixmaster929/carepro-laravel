@@ -65,6 +65,9 @@
                 <a href="{{ route('candidate.applications') }}" class="nav-link"><i class="fa fa-clipboard"></i>&nbsp; @lang('site.applications')</a>
             </li><!-- nav-item -->
             <li class="nav-item">
+                <a href="{{ route('candidate.interviews') }}" class="nav-link"><i class="fa fa-calendar-alt"></i>&nbsp; @lang('site.interviews')</a>
+            </li><!-- nav-item -->
+            <li class="nav-item">
                 <a href="{{ route('candidate.placements') }}" class="nav-link"><i class="fa fa-user-friends"></i>&nbsp; @lang('site.placements')</a>
             </li><!-- nav-item -->
             <li class="nav-item">

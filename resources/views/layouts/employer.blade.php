@@ -15,7 +15,7 @@
     @if(!empty(setting('image_icon')))
         <link rel="shortcut icon" type="image/x-icon" href="{{ asset(setting('image_icon')) }}">
         @endif
-
+        <link href="{{ asset('css/admin.css') }}" rel="stylesheet" />
     <!-- vendor css -->
     <link href="{{ asset('themes/azia/lib/fontawesome-free/css/all.min.css') }}" rel="stylesheet">
     <link href="{{ asset('themes/azia/lib/ionicons/css/ionicons.min.css') }}" rel="stylesheet">

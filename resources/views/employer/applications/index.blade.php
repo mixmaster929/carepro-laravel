@@ -167,7 +167,7 @@
                                 {{ boolToString($item->shortlisted) }}
                             </td>
                             <td>{{ \Illuminate\Support\Carbon::parse($item->created_at)->format('d/M/Y') }}</td>
-			    <td>{{ $item->status }}</td>
+			                <td>{{ $item->status }}</td>
                             <td>
                                 <div class="btn-group dropup">
                                     <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -175,21 +175,23 @@
                                     </button>
                                     <div class="dropdown-menu">
                                         <!-- Dropdown menu links -->
-					<a class="dropdown-item" href="#" onclick="$('#allowForm{{ $item->id }}').submit()">Allow</a>
-					<a class="dropdown-item" href="#" onclick="$('#denyForm{{ $item->id }}').submit()">Deny</a>
-                                        <a class="dropdown-item" href="{{ route('profile',['candidate'=>$item->user_id]) }}">@lang('site.view-candidate')</a>
+					                    <a class="dropdown-item" href="#" onclick="$('#allowForm{{ $item->id }}').submit()">@lang('site.allow')</a>
+                                        <a class="dropdown-item" href="#" onclick="$('#denyForm{{ $item->id }}').submit()">@lang('site.deny')</a>
+                                        <a class="dropdown-item" href="{{ route('employer.create-interview', ['application' => $item->id]) }}">@lang('site.make-interview')</a>
+                                        <a class="dropdown-item" href="{{ route('employer.profiles',['candidate'=>$item->user->candidate->id, 'application' => $item->id]) }}">@lang('site.view-candidate')</a>
+                                        <a class="dropdown-item" href="{{ route('employer.create-placement', ['application' => $item->id]) }}">@lang('site.make-placement')</a>
                                         <a class="dropdown-item" href="{{ route('employer.applications.shortlist',['application'=>$item->id]) }}?status={{ $item->shortlisted==1? 0:1 }}">{{ $item->shortlisted==1? __('site.remove-from').' ':'' }}@lang('site.shortlist')</a>
                                         <a class="dropdown-item" href="{{ route('employer.candidates.tests',['user'=>$item->user_id]) }}" >@lang('site.test-results') ({{ $item->user->userTests()->count() }})</a>
                                     </div>
                                 </div>
-				<form  onsubmit="return confirm(&quot; Allow &quot;)"   id="allowForm{{ $item->id }}"  method="POST" action="{{ url('/employer/applications/allow' . '/' . $item->id) }}" accept-charset="UTF-8" class="int_inlinedisp">
+                                <form  onsubmit="return confirm(&quot; @lang('site.allow') &quot;)"   id="allowForm{{ $item->id }}"  method="POST" action="{{ url('/employer/applications/allow' . '/' . $item->id) }}" accept-charset="UTF-8" class="int_inlinedisp">
                                     {{ method_field('PUT') }}
                                     {{ csrf_field() }}
                                 </form>
-				<form  onsubmit="return confirm(&quot; Deny &quot;)"   id="denyForm{{ $item->id }}"  method="POST" action="{{ url('/employer/applications/deny' . '/' . $item->id) }}" accept-charset="UTF-8" class="int_inlinedisp">
+                                <form  onsubmit="return confirm(&quot; @lang('site.deny') &quot;)"   id="denyForm{{ $item->id }}"  method="POST" action="{{ url('/employer/applications/deny' . '/' . $item->id) }}" accept-charset="UTF-8" class="int_inlinedisp">
                                     {{ method_field('PUT') }}
                                     {{ csrf_field() }}
-                                </form>                                
+                                </form>
                             </td>
                         </tr>
                     @endforeach

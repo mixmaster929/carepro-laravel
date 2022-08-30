@@ -461,6 +461,7 @@ return [
     'internal-note'=>'Internal Note (admins only)',
     'employer-comment'=>'Employer Comment (visible to employer)',
     'send-reminder'=>'Send Reminders to employer?',
+    'send-reminder-employee'=>'Send Reminders to employee?',
     'request-feedback'=>'Ask employer for feedback after interview date?',
     'interview'=>'Interview',
     'time'=>'Time',
@@ -869,29 +870,10 @@ return [
     'copied-clipboard'=>'Copied to Clipboard',
     'invoice-error'=>"Unable to create invoice. Please specify an automatic invoice amount for the selected order form.",
     'unauthorized-access'=>'You are not authorized to access this resource',
-    'test-completed-already'=>'You have already completed this test'
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    'test-completed-already'=>'You have already completed this test',
+    'allow' => 'Allow',
+    'deny' => 'Deny',
+    'make-interview' => 'Make Interview',
+    'make-placement' => 'Make Placement',
+    'delete-interview' => 'Delete Interview'
 ];

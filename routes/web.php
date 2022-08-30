@@ -342,7 +342,7 @@ Route::group(['middleware'=>['employer'],'prefix' => 'employer', 'as' => 'employ
     Route::get('interviews','InterviewController@interviews')->name('interviews');
     Route::get('interviews/{interview}','InterviewController@view')->name('view-interview');
     Route::post('interviews/{interview}','InterviewController@update')->name('update-interview');
-
+    
     Route::get('image','HomeController@showImage')->name('image');
     Route::get('download','HomeController@download')->name('download');
     Route::get('employer-remove-file/{fieldId}/{userId}','HomeController@removeFile')->name('remove-file');
@@ -362,8 +362,19 @@ Route::group(['middleware'=>['employer'],'prefix' => 'employer', 'as' => 'employ
 
     Route::put('applications/allow/{id}','ApplicationsController@allow')->name('applications.allow');
     Route::put('applications/deny/{id}','ApplicationsController@deny')->name('applications.deny');
-    // Route::resource('candidates', 'CandidatesController');
 
+    Route::get('interview/create-interview/{application}','InterviewController@createInterview')->name('create-interview');
+    
+    Route::get('placement/create-placement/{application}','InterviewController@createPlacement')->name('create-placement');
+    Route::post('placement/store-employment','InterviewController@storePlacementt')->name('store-employment');
+
+    Route::post('interview','InterviewController@store')->name('interview.store');
+
+    Route::get('interview/{interview}/edit','InterviewController@edit')->name('edit-interview');
+    Route::post('interview/update/{id}','InterviewController@updateInterview')->name('update_interview');
+    Route::delete('interview/{interview}','InterviewController@destroy')->name('delete-interview');
+
+    Route::get('/profiles/{candidate}/{application}','ProfileController@showProfile')->name('profiles');
 });
 
 Route::group(['middleware'=>['candidate'],'prefix' => 'candidate', 'as' => 'candidate.','namespace'=>'Candidate'],function() {
@@ -374,7 +385,7 @@ Route::group(['middleware'=>['candidate'],'prefix' => 'candidate', 'as' => 'cand
     Route::get('/application-complete','VacanciesController@complete')->name('vacancy.complete');
     Route::get('applications','HomeController@applications')->name('applications');
     Route::get('interviews','HomeController@interviews')->name('interviews');
-    Route::get('viewInterview','HomeController@viewInterview')->name('view-interview');
+    Route::get('interview/{interview}','HomeController@viewInterview')->name('view-interview');
     
     Route::get('placements','HomeController@placements')->name('placements');
     Route::get('placements/{employment}','HomeController@view')->name('view-placement');
@@ -402,9 +413,7 @@ Route::group(['middleware'=>['candidate'],'prefix' => 'candidate', 'as' => 'cand
     Route::get('candidate-remove-picture','HomeController@removePicture')->name('remove-picture');
     Route::get('candidate-remove-cv','HomeController@removeCv')->name('remove-cv');
 
-
-
-
+    
 });
 
 //general auth routes

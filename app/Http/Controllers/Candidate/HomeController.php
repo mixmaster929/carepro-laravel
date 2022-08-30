@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Candidate;
 use App\Http\Controllers\Controller;
 use App\Interview;
 use App\Invoice;
+use App\Candidate;
 use App\Test;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -264,5 +265,15 @@ class HomeController extends Controller
         return back()->with('flash_message',__('site.file').' '.__('site.deleted'));
     }
 
+    public function interviews(){
+        $candidate_id = Auth::user()->candidate->id;
+        $interviews = Candidate::findOrFail($candidate_id)->interviews;
+        
+        return view('candidate.interview.interviews', compact(['interviews']));
+    }
 
+    public function viewInterview(Interview $interview)
+    {
+        return view('candidate.interview.view',compact('interview'));
+    }
 }
