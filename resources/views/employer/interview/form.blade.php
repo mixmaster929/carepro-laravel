@@ -13,7 +13,7 @@
 <div class="form-group  {{ $errors->has('candidate_id') ? 'has-error' : ''}}">
     <label for="candidate_id">@lang('site.candidates')</label>
     @if($formMode === 'edit')
-        <select multiple name="candidates[]" id="candidates" class="form-control select2">
+        <select multiple name="candidate_id[]" id="candidate_id" class="form-control select2">
             @foreach($interview->candidates as $candidate)
                 <option  @if( (is_array(old('candidates')) && in_array(@$candidate->id,old('candidates')))  || (null === old('candidates')))
                     selected
@@ -22,6 +22,9 @@
             @endforeach
         </select>
     @else
+    <!-- <select  multiple name="candidate_id[]" id="candidate_id" class="form-control select2">
+        <option></option>
+    </select> -->
     <input type="text" readonly  name="candidate" id="candidate" class="form-control" value="{{ \App\User::find($application->user_id)->name }}" />
     <input type="hidden" name="candidate_id[]" id="candidate_id" class="form-control" value="{{ \App\User::find($application->user_id)->candidate->id }}" />
     @endif

@@ -71,7 +71,7 @@
                                             <br/>
                                             <strong>@lang('site.gender'):</strong> {{ gender($item->gender) }}
                                         </p>
-                                        <a target="_blank" href="{{ route('profile',['candidate'=>$item->id]) }}" class="card-link  btn btn-sm btn-primary rounded">@lang('site.view-profile')</a>
+                                        <a target="_blank" href="{{ route('employer.profiles',['candidate'=>$item->id, 'application'=>$interview->application_id]) }}" class="card-link  btn btn-sm btn-primary rounded">@lang('site.view-profile')</a>
                                     </div>
                                 </div><!-- card -->
 

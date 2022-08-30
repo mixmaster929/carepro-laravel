@@ -8,9 +8,25 @@
     <script  type="text/javascript">
     "use strict";
 
-        $('#candidates').select2({
+        $('#candidate_id').select2({
             disabled:'readonly',
-            placeholder: "@lang('site.search-candidates')...",
+            // placeholder: "@lang('site.search-candidates')...",
+            // minimumInputLength: 3,
+            // ajax: {
+            //     url: '{{ route('admin.candidates.search') }}?format=candidate_id',
+            //     dataType: 'json',
+            //     data: function (params) {
+            //         return {
+            //             term: $.trim(params.term)
+            //         };
+            //     },
+            //     processResults: function (data) {
+            //         return {
+            //             results: data
+            //         };
+            //     },
+            //     cache: true
+            // }
         });
 
     </script>
