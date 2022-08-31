@@ -375,6 +375,19 @@ Route::group(['middleware'=>['employer'],'prefix' => 'employer', 'as' => 'employ
     Route::delete('interview/{interview}','InterviewController@destroy')->name('delete-interview');
 
     Route::get('/profiles/{candidate}/{application}','ProfileController@showProfile')->name('profiles');
+    Route::get('/test_profiles/{candidate}/{userTest}','ProfileController@showProfileTest')->name('test_profiles');
+
+    Route::resource('tests','TestsController');
+    Route::resource('test-questions', 'TestQuestionsController');
+    Route::get('test-question/{test}','TestQuestionsController@index')->name('test-questions.index');
+    Route::get('test-question/create/{test}','TestQuestionsController@create')->name('test-questions.create');
+    Route::post('test-question/{test}','TestQuestionsController@store')->name('test-questions.store');
+    Route::post('test-option/store/{testQuestion}','TestQuestionsController@storeOptions')->name('test-options.store');
+    Route::get('test-options/edit/{testOption}','TestQuestionsController@editOption')->name('test-options.edit');
+    Route::post('test-options/update/{testOption}','TestQuestionsController@updateOption')->name('test-options.update');
+    Route::get('test-options/delete/{testOption}','TestQuestionsController@deleteOption')->name('test-options.delete');
+    Route::get('test-attempts/{test}','TestsController@attempts')->name('tests.attempts');
+
 });
 
 Route::group(['middleware'=>['candidate'],'prefix' => 'candidate', 'as' => 'candidate.','namespace'=>'Candidate'],function() {

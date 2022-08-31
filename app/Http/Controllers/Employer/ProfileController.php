@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Application;
 use App\Candidate;
 use App\CandidateFieldGroup;
-
+use App\UserTest;
 
 class ProfileController extends Controller
 {
@@ -132,5 +132,18 @@ class ProfileController extends Controller
         return tview('site.profiles.profile',compact('candidate','groups'));
     }
 
+    public function showProfileTest(Candidate $candidate, UserTest $userTest){
+        if(empty($candidate->public) && ($userTest->user_id != $candidate->user_id)){
+            return abort(404);
+        }
 
+        //get field groups
+        $groups = CandidateFieldGroup::where('visible',1)->orderBy('sort_order')->get();
+
+        if (isEmployer()){
+            return view('site.profiles.profile',compact('candidate','groups'));
+        }
+
+        return tview('site.profiles.profile',compact('candidate','groups'));
+    }
 }

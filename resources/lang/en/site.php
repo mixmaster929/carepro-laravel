@@ -875,5 +875,12 @@ return [
     'deny' => 'Deny',
     'make-interview' => 'Make Interview',
     'make-placement' => 'Make Placement',
-    'delete-interview' => 'Delete Interview'
+    'delete-interview' => 'Delete Interview',
+    'creator' => 'Creator',
+    'all_user' => 'All Users',
+    'all_employer' => 'All Employers',
+    'all_candidate' => 'All Candidates',
+    'postcode' => 'Postal Code',
+    'tax_number' => 'Tax Number',
+    'tt_number' => 'Chamber of commerce number'
 ];

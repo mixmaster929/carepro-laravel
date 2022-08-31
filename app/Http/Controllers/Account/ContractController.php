@@ -48,6 +48,56 @@ class ContractController extends Controller
                 $name = '[name-'.$userId.']';
                 $nameReplace = $user->name;
                 $content = str_ireplace($name,$nameReplace,$content);
+
+                //replace address
+                $address = '[address-'.$userId.']';
+                if(isEmployer()){
+                    $addressReplace = $user->employerFields()->where('name', 'Adres')->first()->pivot->value;
+                }
+                if(isCandidate()){
+                    $addressReplace = $user->candidateFields()->where('name','Adres')->first()->pivot->value;
+                }
+                $content = str_ireplace($address,$addressReplace,$content);
+
+                //replace postalcode
+                $postalcode = '[postalcode-'.$userId.']';
+                if(isEmployer()){
+                    $postalcodeReplace = $user->employerFields()->where('name', 'Postcode')->first()->pivot->value;
+                }
+                if(isCandidate()){
+                    $postalcodeReplace = $user->candidateFields()->where('name','Postcode')->first()->pivot->value;
+                }
+                $content = str_ireplace($postalcode,$postalcodeReplace,$content);
+
+                //replace location
+                $location = '[location-'.$userId.']';
+                if(isEmployer()){
+                    $locationReplace = $user->employerFields()->where('name', 'Plaats')->first()->pivot->value;
+                }
+                if(isCandidate()){
+                    $locationReplace = $user->candidateFields()->where('name','Standplaats')->first()->pivot->value;
+                }
+                $content = str_ireplace($location,$locationReplace,$content);
+
+                //replace tax number
+                $tax_number = '[tax_number-'.$userId.']';
+                if(isEmployer()){
+                    $tax_numberReplace = $user->employerFields()->where('name', 'KvK nummer')->first()->pivot->value;
+                }
+                if(isCandidate()){
+                    $tax_numberReplace = $user->candidateFields()->where('name','KvK Handelsregister')->first()->pivot->value;
+                }
+                $content = str_ireplace($tax_number,$tax_numberReplace,$content);
+
+                //replace chamber of commerce number
+                $commerce_number = '[commerce_number-'.$userId.']';
+                if(isEmployer()){
+                    $commerce_numberReplace = $user->employerFields()->where('name', 'BTW nummer')->first()->pivot->value;
+                }
+                if(isCandidate()){
+                    $commerce_numberReplace = $user->candidateFields()->where('name','BTW nummer')->first()->pivot->value;
+                }
+                $content = str_ireplace($commerce_number,$commerce_numberReplace,$content);
             }
 
             return view('account.contract.show',compact('contract','content'));

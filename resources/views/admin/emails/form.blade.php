@@ -18,6 +18,21 @@
     <input class="form-control" name="cc" type="text" id="cc" value="{{ old('cc',isset($email->cc) ? $email->cc : '') }}" >
     {!! clean( $errors->first('cc', '<p class="help-block">:message</p>') ) !!}
 </div>
+<div class="form-group">
+    <label for="bcc" class="control-label">{{ 'BCC:' }}&nbsp &nbsp</label>
+    <div class="form-check form-check-inline">
+        <input  autocomplete="off"  class="form-check-input send" type="radio" name="bcc" id="inlineRadio1" value="1">
+        <label class="form-check-label" for="inlineRadio1">@lang('site.all_user')</label>
+    </div>
+    <div class="form-check form-check-inline">
+        <input  autocomplete="off"  class="form-check-input send" type="radio" name="bcc" id="inlineRadio2" value="2">
+        <label class="form-check-label" for="inlineRadio2">@lang('site.all_employer')</label>
+    </div>
+    <div class="form-check form-check-inline">
+        <input  autocomplete="off"  class="form-check-input send" type="radio" name="bcc" id="inlineRadio2" value="3">
+        <label class="form-check-label" for="inlineRadio2">@lang('site.all_candidate')</label>
+    </div>
+</div>
 <div class="form-group {{ $errors->has('subject') ? 'has-error' : ''}}">
     <label for="subject" class="control-label required">@lang('site.subject')</label>
     <input required class="form-control" name="subject" type="text" id="subject" value="{{ old('subject',isset($email->subject) ? $email->subject : '') }}" >

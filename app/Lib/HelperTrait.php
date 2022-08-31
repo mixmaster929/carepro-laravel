@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 
 trait HelperTrait {
 
@@ -31,7 +32,7 @@ trait HelperTrait {
         request()->session()->flash('alert-danger', $message);
     }
 
-    public function sendEmail($recipientEmail,$subject,$message,$from=null,$cc=null,$attachments=null,$flashError=true){
+    public function sendEmail($recipientEmail,$subject,$message,$from=null,$cc=null,$attachments=null,$flashError=true, $bcc=null){
 
         $cc = $this->extract_emails($cc);
         try{
@@ -51,18 +52,24 @@ trait HelperTrait {
 
             }
 
-            Mail::to($recipientEmail)->cc($allCC)->send(New Generic($subject,$message,$from,$attachments));
-        }
-        else{
-            Mail::to($recipientEmail)->send(New Generic($subject,$message,$from,$attachments));
-        }
+                if(!empty($bcc)){
+                    Mail::to($recipientEmail)->cc($allCC)->bcc($bcc)->send(New Generic($subject,$message,$from,$attachments));
+                }
+                Mail::to($recipientEmail)->cc($allCC)->send(New Generic($subject,$message,$from,$attachments));
+            }
+            else{
+                if(!empty($bcc)){
+                    Mail::to($recipientEmail)->bcc($bcc)->send(New Generic($subject,$message,$from,$attachments));
+                }
+                Mail::to($recipientEmail)->send(New Generic($subject,$message,$from,$attachments));
+            }
         return true;
 
 
 
     }
 catch(\Exception $ex){
-  //  dd($ex);
+//    dd($ex);
     if($flashError && !request()->expectsJson()){
         $this->warningMessage(__('site.send-failed').': '.$ex->getMessage());
     }
@@ -113,12 +120,9 @@ catch(\Exception $ex){
             $attachments[] = $file;
         }
 
-
-
-
-
-        $this->sendEmail($email->user->email,$email->subject,$message,null,$email->cc,$attachments);
-
+        $this->sendEmail($email->user->email,$email->subject,$message,null,$email->cc,$attachments,null,$email->bcc);
+        unset($email->bcc);
+        
         $email->sent = 1;
         $email->save();
 

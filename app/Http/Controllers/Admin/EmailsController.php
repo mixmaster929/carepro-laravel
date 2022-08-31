@@ -14,6 +14,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 
 class EmailsController extends Controller
 {
@@ -175,6 +176,25 @@ class EmailsController extends Controller
             }
             @rmdir($path);
         }
+        $emaills = null;
+        if(isset($requestData['bcc'])){
+            switch($requestData['bcc']){
+                case 1:
+                    $bcc = User::select('email')->get();
+                    break;
+                case 2:
+                    $bcc = User::select('email')->where('role_id', 2)->get();
+                    break;
+                case 3:
+                    $bcc = User::select('email')->where('role_id', 3)->get();
+                    break;
+            }
+            foreach($bcc as $key => $value){
+                $emaills[] = $value->email;
+            }
+            $email['bcc'] = $emaills;
+        }
+
 
         if($requestData['sent']==1){
             $this->sendSavedEmail($email);

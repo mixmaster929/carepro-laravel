@@ -9,7 +9,7 @@
     "use strict";
 
         $('#candidate_id').select2({
-            disabled:'readonly',
+            // disabled:'readonly',
             // placeholder: "@lang('site.search-candidates')...",
             // minimumInputLength: 3,
             // ajax: {

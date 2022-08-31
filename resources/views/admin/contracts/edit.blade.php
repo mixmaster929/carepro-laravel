@@ -74,6 +74,37 @@
                                                     @foreach($users as $user)
                                                         <a class="dropdown-item placeholder-link" data-code="[{{ 'date-'.$user->id }}]" href="javascript:;" >{{ $user->name }} ({{ roleName($user->role_id) }}) - <strong>[{{ 'date-'.$user->id }}]</strong></a>
                                                     @endforeach
+                                                    <div class="dropdown-divider"></div>
+
+                                                    <a class="dropdown-item">{{ __('site.address') }}</a>
+                                                    @foreach($users as $user)
+                                                        <a class="dropdown-item placeholder-link" data-code="[{{ 'address-'.$user->id }}]" href="javascript:;" >{{ $user->name }} ({{ roleName($user->role_id) }}) - <strong>[{{ 'address-'.$user->id }}]</strong></a>
+                                                    @endforeach
+                                                    <div class="dropdown-divider"></div>
+
+                                                    <a class="dropdown-item">{{ __('site.postcode') }}</a>
+                                                    @foreach($users as $user)
+                                                        <a class="dropdown-item placeholder-link" data-code="[{{ 'postalcode-'.$user->id }}]" href="javascript:;" >{{ $user->name }} ({{ roleName($user->role_id) }}) - <strong>[{{ 'postalcode-'.$user->id }}]</strong></a>
+                                                    @endforeach
+                                                    <div class="dropdown-divider"></div>
+
+                                                    <a class="dropdown-item">{{ __('site.location') }}</a>
+                                                    @foreach($users as $user)
+                                                        <a class="dropdown-item placeholder-link" data-code="[{{ 'location-'.$user->id }}]" href="javascript:;" >{{ $user->name }} ({{ roleName($user->role_id) }}) - <strong>[{{ 'location-'.$user->id }}]</strong></a>
+                                                    @endforeach
+                                                    <div class="dropdown-divider"></div>
+
+                                                    <a class="dropdown-item">{{ __('site.tax_number') }}</a>
+                                                    @foreach($users as $user)
+                                                        <a class="dropdown-item placeholder-link" data-code="[{{ 'tax_number-'.$user->id }}]" href="javascript:;" >{{ $user->name }} ({{ roleName($user->role_id) }}) - <strong>[{{ 'tax_number-'.$user->id }}]</strong></a>
+                                                    @endforeach
+                                                    <div class="dropdown-divider"></div>
+
+                                                    <a class="dropdown-item">{{ __('site.tt_number') }}</a>
+                                                    @foreach($users as $user)
+                                                        <a class="dropdown-item placeholder-link" data-code="[{{ 'commerce_number-'.$user->id }}]" href="javascript:;" >{{ $user->name }} ({{ roleName($user->role_id) }}) - <strong>[{{ 'commerce_number-'.$user->id }}]</strong></a>
+                                                    @endforeach
+                                                    <div class="dropdown-divider"></div>
 
                                                 </div>
                                             </div>

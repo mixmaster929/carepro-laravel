@@ -16,4 +16,7 @@ class Application extends Model
         return $this->belongsTo(Vacancy::class);
     }
 
+    public function interviews(){
+        return $this->hasMany(Interview::class);
+    }
 }

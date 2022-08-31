@@ -88,7 +88,9 @@
             <li class="nav-item">
                 <a href="{{ route('employer.interviews') }}" class="nav-link"><i class="fa fa-calendar-alt"></i>&nbsp; @lang('site.interviews')</a>
             </li><!-- nav-item -->
-
+            <li class="nav-item">
+                <a href="{{ route('employer.tests.index') }}" class="nav-link"><i class="fa fa-question-circle"></i>&nbsp; @lang('site.tests')</a>
+            </li><!-- nav-item -->
             <li class="nav-item">
                 <a href="{{ route('user.contract.index') }}" class="nav-link"><i class="fa fa-handshake"></i>&nbsp; @lang('site.contracts')</a>
             </li><!-- nav-item -->
