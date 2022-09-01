@@ -1144,6 +1144,11 @@ class CandidatesController extends Controller
         return view('employer.candidates.tests',compact('tests','perPage','user'));
     }
 
+    public function results(UserTest $userTest){
+        $test = Test::find($userTest->test_id);
+        return view('employer.candidates.test-results', compact('userTest','test'));
+    }
+
     private function getAllFields(){
         $fields = [];
         foreach(\App\CandidateFieldGroup::orderBy('sort_order')->get() as $group){

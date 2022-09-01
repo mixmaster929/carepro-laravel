@@ -67,7 +67,7 @@
                                 {{ \Carbon\Carbon::parse($item->created_at)->format('d/M/Y') }}
                             </td>
                             <td>
-                                <a href="{{ route('admin.tests.results',['userTest'=>$item->id]) }}"><i class="fa fa-eye"></i> @lang('site.view-results')</a>
+                                <a href="{{ route('employer.tests.results',['userTest'=>$item->id]) }}"><i class="fa fa-eye"></i> @lang('site.view-results')</a>
                             </td>
                         </tr>
                     @endforeach

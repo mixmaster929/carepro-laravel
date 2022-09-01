@@ -5,7 +5,7 @@
 
 @section('content')
     <div>
-        <a href="{{ url('/employer/test-questions') }}" title="@lang('site.back')"><button class="btn btn-warning btn-sm"><i class="fa fa-arrow-left" aria-hidden="true"></i> @lang('site.back')</button></a>
+        <a href="{{ url('/employer/tests') }}" title="@lang('site.back')"><button class="btn btn-warning btn-sm"><i class="fa fa-arrow-left" aria-hidden="true"></i> @lang('site.back')</button></a>
         <a href="{{ url('/employer/test-questions/' . $testquestion->id . '/edit') }}" ><button class="btn btn-primary btn-sm"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> @lang('site.edit')</button></a>
         <form method="POST" action="{{ url('employer/test-questions' . '/' . $testquestion->id) }}" accept-charset="UTF-8" class="int_inlinedisp">
             {{ method_field('DELETE') }}
