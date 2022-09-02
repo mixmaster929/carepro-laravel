@@ -7,10 +7,11 @@ use Illuminate\Http\Request;
 use App\Vacancy;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
-
+use App\Lib\HelperTrait;
 
 class VacanciesController extends Controller
 {
+    use HelperTrait;
     /**
      * Display a listing of the resource.
      *
@@ -105,6 +106,8 @@ class VacanciesController extends Controller
             $vacancy->jobCategories()->attach($requestData['categories']);
         }
 
+        $subject = __('site.create-vacancy');
+        $this->sendEmail(setting('general_admin_email'), $subject, "Employer ".$user->name." has made a Vacancy: ".$requestData['title']." Location ".$requestData['location']." Closing Date ".$requestData['closes_at']);
 
         return redirect('employer/vacancies')->with('flash_message', __('site.changes-saved'));
     }

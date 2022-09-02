@@ -243,6 +243,16 @@ class RegisterController extends Controller
             //send email to user
             $link = route('confirm.employer',['hash'=>$hash],true);
             $this->sendEmail($request->email,__('site.confirm-your-email'),__('site.confirm-email-mail',['link'=>$link]));
+            
+            $subject = __('mails.new-account-subj',[
+                'siteName'=>setting('general_site_name')
+            ]);
+            $admin_message = __('mails.new-account',[
+                'siteName'=>setting('general_site_name'),
+                'name'=> $request->name
+            ]);
+    
+            $this->sendEmail(setting('general_admin_email'),$subject,$admin_message);
             return redirect()->route('register.confirm');
         }
 
@@ -307,6 +317,13 @@ class RegisterController extends Controller
             'siteName'=>setting('general_site_name')
         ]);
         $this->sendEmail($requestData['email'],$subject,$message);
+
+        $admin_message = __('mails.new-account',[
+            'siteName'=>setting('general_site_name'),
+            'name'=> $request->name
+        ]);
+
+        $this->sendEmail(setting('general_admin_email'),$subject,$admin_message);
 
         //now login user
         Auth::login($user, true);
@@ -520,6 +537,16 @@ class RegisterController extends Controller
             //send email to user
             $link = route('confirm.candidate',['hash'=>$hash]);
             $this->sendEmail($request->email,__('site.confirm-your-email'),__('site.confirm-email-mail',['link'=>$link]));
+            $subject = __('mails.new-account-subj',[
+                'siteName'=>setting('general_site_name')
+            ]);
+    
+            $admin_message = __('mails.new-account',[
+                'siteName'=>setting('general_site_name'),
+                'name'=> $requestData['name']
+            ]);
+    
+            $this->sendEmail(setting('general_admin_email'),$subject,$admin_message);
             return redirect()->route('register.confirm');
         }
 
@@ -629,6 +656,13 @@ class RegisterController extends Controller
             'siteName'=>setting('general_site_name')
         ]);
         $this->sendEmail($requestData['email'],$subject,$message);
+
+        $admin_message = __('mails.new-account',[
+            'siteName'=>setting('general_site_name'),
+            'name'=> $requestData['name']
+        ]);
+
+        $this->sendEmail(setting('general_admin_email'),$subject,$admin_message);
 
         //now login user
         Auth::login($user, true);
