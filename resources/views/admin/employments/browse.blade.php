@@ -95,6 +95,7 @@
                                                 </button>
                                                 <div class="dropdown-menu">
                                                     <!-- Dropdown menu links -->
+                                                    <a class="dropdown-item" href="{{ url('/admin/invoices/create') }}">@lang('site.create-invoice')</a>
                                                     @can('access','view_employment')
                                                     <a class="dropdown-item" href="{{ url('/admin/employments/' . $item->id) }}">@lang('site.view')</a>
                                                     @endcan

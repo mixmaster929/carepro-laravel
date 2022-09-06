@@ -76,6 +76,11 @@
                             <input class="form-control" name="password" type="password" id="password" value="{{ old('password',isset($employer->employer->password) ? $employer->employer->password : '') }}" >
                             {!! clean( $errors->first('password', '<p class="help-block">:message</p>') ) !!}
                         </div>
+                        <div class="form-group col-md-6 {{ $errors->has('clientnumber') ? 'has-error' : ''}}">
+                            <label for="clientnumber" class="control-label">@lang('site.client_number')</label>
+                            <input class="form-control" name="clientnumber" type="clientnumber" id="clientnumber" value="{{ old('clientnumber',isset($employer->clientnumber) ? $employer->clientnumber : '') }}" >
+                            {!! clean( $errors->first('clientnumber', '<p class="help-block">:message</p>') ) !!}
+                        </div>
                 </div>
                 @if($formMode=='create')
                     <div class="row">

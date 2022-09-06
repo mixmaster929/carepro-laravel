@@ -94,6 +94,7 @@
                                         <th>@lang('site.employed')</th>
                                         <th>@lang('site.telephone')</th>
                                         <th>@lang('site.email')</th>
+                                        <th>@lang('site.client_number')</th>
                                         <th>@lang('site.active')</th>
                                         <th>@lang('site.actions')</th>
                                     </tr>
@@ -107,6 +108,7 @@
                                         <td>{{ $item->employer->employments->count() }}</td>
                                         <td>{{  $item->telephone }}</td>
                                         <td>{{ $item->email }}</td>
+                                        <td>{{ $item->clientnumber }}</td>
                                         <td>{{ boolToString($item->employer->active) }}</td>
                                         <td>
                                             <div class="btn-group dropleft">

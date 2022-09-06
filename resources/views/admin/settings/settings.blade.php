@@ -18,8 +18,30 @@
                         <div class="form-group">
                             <label for="{{ $setting->key }}">@lang('settings.'.$setting->key)</label>
                             @if($setting->type=='text')
-
-                                <input placeholder="{{ $setting->placeholder }}" @if(empty($setting->class)) class="form-control" @else class="{{ $setting->class }}"@endif type="text" name="{{ $setting->key }}" value="{{ $setting->value }}"/>
+                                <?php
+                                    $year = date("Y"); 
+                                    $users = App\User::where('clientnumber', 'LIKE', '%'.$year.'%')->get();
+                                    $count = count($users)+1;
+                                    $number = strlen((string)$count);
+                                    switch($number){
+                                        case "1" : 
+                                            $number = '000'.$count;
+                                            break;
+                                        case "2" : 
+                                            $number = '00'.$count;
+                                            break;
+                                        case "3" : 
+                                            $number = '0'.$count;
+                                            break;
+                                        case "4" : 
+                                            $number = $count;
+                                            break;
+                                        default:
+                                            $number = $count;
+                                            break;
+                                    }
+                                ?>
+                                <input placeholder="{{ $setting->placeholder }}" @if(empty($setting->class)) class="form-control" @else class="{{ $setting->class }}"@endif type="text" name="{{ $setting->key }}" value=@if($setting->key==='general_client_number') {{$number}} @else"{{ $setting->value }}" @endif @if($setting->key==='general_client_number') disabled @else "" @endif/>
 
                             @elseif($setting->type=='include')
                                 @include($setting->options)

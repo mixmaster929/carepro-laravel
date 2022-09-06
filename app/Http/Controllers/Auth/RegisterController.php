@@ -260,6 +260,29 @@ class RegisterController extends Controller
 
         //First create user
         $requestData['api_token'] = Str::random(60);
+        $year = date("Y"); 
+        $users = User::where('clientnumber', 'LIKE', '%'.$year.'%')->get();
+        $count = count($users)+1;
+        $number = strlen((string)$count);
+        switch($number){
+            case "1" : 
+                $number = '000'.$count;
+                break;
+            case "2" : 
+                $number = '00'.$count;
+                break;
+            case "3" : 
+                $number = '0'.$count;
+                break;
+            case "4" : 
+                $number = $count;
+                break;
+            default:
+                $number = $count;
+                break;
+        }
+
+        $requestData['clientnumber'] = 'DCW'.$year.$number;
         $user= User::create($requestData);
 
 
@@ -552,6 +575,29 @@ class RegisterController extends Controller
 
         //First create user
         $requestData['api_token'] = Str::random(60);
+        $year = date("Y"); 
+        $users = User::where('clientnumber', 'LIKE', '%'.$year.'%')->get();
+        $count = count($users)+1;
+        $number = strlen((string)$count);
+        switch($number){
+            case "1" : 
+                $number = '000'.$count;
+                break;
+            case "2" : 
+                $number = '00'.$count;
+                break;
+            case "3" : 
+                $number = '0'.$count;
+                break;
+            case "4" : 
+                $number = $count;
+                break;
+            default:
+                $number = $count;
+                break;
+        }
+
+        $requestData['clientnumber'] = 'DCS'.$year.$number;
         $user= User::create($requestData);
 
         //Calculate date of birth

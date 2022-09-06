@@ -86,7 +86,10 @@
                                                             <label  class="control-label">@lang('site.registered-on')</label>
                                                             <div>{{ \Illuminate\Support\Carbon::parse($employer->created_at)->format('d/M/Y') }}</div>
                                                         </div>
-
+                                                        <div class="col-md-6">
+                                                            <label  class="control-label">@lang('site.client_number')</label>
+                                                            <div>{{ $employer->clientnumber }}</div>
+                                                        </div>
                                                 </div>
 
 

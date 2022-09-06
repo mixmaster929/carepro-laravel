@@ -882,5 +882,6 @@ return [
     'all_candidate' => 'All Candidates',
     'postcode' => 'Postal Code',
     'tax_number' => 'Tax Number',
-    'tt_number' => 'Chamber of commerce number'
+    'tt_number' => 'Chamber of commerce number',
+    'client_number' => 'Client Number'
 ];

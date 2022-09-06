@@ -102,6 +102,16 @@
                     {!! clean( $errors->first('date_of_birth', '<p class="help-block">:message</p>') ) !!}
                 </div>
                 </div>
+                <div class="row">
+                    <div class="col-md-6">
+                                                
+                    </div>
+                    <div class="col-md-6 {{ $errors->has('clientnumber') ? 'has-error' : ''}}">
+                        <label for="clientnumber" class="control-label">@lang('site.client_number')</label>
+                        <input class="form-control" name="clientnumber" type="text" id="clientnumber" value="{{ old('clientnumber',isset($candidate->clientnumber) ? $candidate->clientnumber : '') }}" >
+                        {!! clean( $errors->first('clientnumber', '<p class="help-block">:message</p>') ) !!}
+                    </div>
+                </div>
 
 
                 <div class="row">

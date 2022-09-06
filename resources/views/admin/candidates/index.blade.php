@@ -91,6 +91,7 @@
                                         <th>@lang('site.gender')</th>
                                         <th>@lang('site.age')</th>
                                         <th>@lang('site.email')</th>
+                                        <th>@lang('site.client_number')</th>
                                         <th>@lang('site.visibility')</th>
                                         <th>@lang('site.actions')</th>
                                     </tr>
@@ -117,6 +118,7 @@
                                         <td>{{ gender($item->candidate->gender) }}</td>
                                         <td>{{  getAge(\Illuminate\Support\Carbon::parse($item->candidate->date_of_birth)->timestamp) }}</td>
                                         <td>{{ $item->email }}</td>
+                                        <td>{{ $item->clientnumber }}</td>
                                         <td>{{ empty($item->candidate->public)? __('site.private'):__('site.public') }}</td>
                                         <td>
                                             <div class="btn-group dropup">

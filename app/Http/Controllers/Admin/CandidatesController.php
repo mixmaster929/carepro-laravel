@@ -81,7 +81,7 @@ class CandidatesController extends Controller
             $candidates = User::where('role_id',3)->where(function ($query)  use ($keyword){
                 $query->whereHas('candidate', function (Builder $query) use ($keyword) {
                     $query->whereRaw("match(display_name) against (? IN NATURAL LANGUAGE MODE)", [$keyword]);
-                })->orWhereRaw("match(name,email,telephone) against (? IN NATURAL LANGUAGE MODE)", [$keyword]);
+                })->orWhereRaw("match(name,email,telephone,clientnumber) against (? IN NATURAL LANGUAGE MODE)", [$keyword]);
             })->orderBy('name');
 
         } else {
@@ -316,6 +316,30 @@ class CandidatesController extends Controller
 
         $requestData['password'] = Hash::make($password);
         $requestData['role_id'] = 3;
+
+        $year = date("Y"); 
+        $users = User::where('clientnumber', 'LIKE', '%'.$year.'%')->get();
+        $count = count($users)+1;
+        $number = strlen((string)$count);
+        switch($number){
+            case "1" : 
+                $number = '000'.$count;
+                break;
+            case "2" : 
+                $number = '00'.$count;
+                break;
+            case "3" : 
+                $number = '0'.$count;
+                break;
+            case "4" : 
+                $number = $count;
+                break;
+            default:
+                $number = $count;
+                break;
+        }
+
+        $requestData['clientnumber'] = 'DCS'.$year.$number;
 
         //First create user
         $user= User::create($requestData);
