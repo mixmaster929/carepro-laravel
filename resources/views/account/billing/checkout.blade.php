@@ -79,8 +79,14 @@
                         <td>{{ $description }}</td>
                     </tr>
                     <tr>
+                    <?php
+                        $vat = number_format(setting('general_vat'));
+                        $amount = number_format($invoice->amount);
+                        $tax = number_format($vat * $amount /100, 2);
+                        $total = number_format(($tax+$amount), 2);
+                    ?>
                         <td><strong>@lang('site.amount'):</strong></td>
-                        <td>{!! clean( price($invoice->amount,$invoice->currency_id) ) !!}</td>
+                        <td><?php echo price($total); ?></td>
                     </tr>
                     </tbody>
                 </table>

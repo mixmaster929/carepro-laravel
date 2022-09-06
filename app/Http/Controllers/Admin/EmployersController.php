@@ -210,6 +210,7 @@ class EmployersController extends Controller
                 'siteName'=>setting('general_site_name'),
                 'email'=>$requestData['email'],
                 'password'=>$password,
+                'clientnumber' => $requestData['clientnumber'],
                 'link'=> url('/login')
             ]);
             $subject = __('mails.new-account-subj',[
@@ -270,6 +271,7 @@ class EmployersController extends Controller
             'name'=>'required',
             'email'=>'required|email|string|max:255',
             'status'=>'required',
+            'clientnumber'=>'required|unique:users',
         ];
 
         $user = User::find($id);

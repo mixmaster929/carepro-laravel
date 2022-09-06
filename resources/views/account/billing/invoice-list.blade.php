@@ -12,6 +12,12 @@
         </thead>
         <tbody>
         @foreach($invoices as $invoice)
+        <?php
+            $vat = number_format(setting('general_vat'));
+            $amount = number_format($invoice->amount);
+            $tax = number_format($vat * $amount /100, 2);
+            $total = number_format(($tax+$amount), 2);
+        ?>
             <tr>
                 <td>#{{ $invoice->id }}</td>
                 <td>{{ $invoice->title }}
@@ -19,7 +25,7 @@
                         <a target="_blank"  href="{{ route('employer.view-order',['order'=>$invoice->orders()->first()->id]) }}">(@lang('site.order') #{{ $invoice->orders()->first()->id }})</a>
                     @endif
                 </td>
-                <td>{!! clean( price($invoice->amount) ) !!}</td>
+                <td><?php echo price($total); ?></td>
                 <td>{{ $invoice->created_at->format('d/M/Y') }}</td>
                 <td>
                     {{ ($invoice->paid==0)?__('site.unpaid'):__('site.paid') }}

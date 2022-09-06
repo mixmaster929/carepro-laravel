@@ -472,6 +472,7 @@ class CandidatesController extends Controller
                 'siteName'=>setting('general_site_name'),
                 'email'=>$requestData['email'],
                 'password'=>$password,
+                'clientnumber' => $requestData['clientnumber'],
                 'link'=> url('/login')
             ]);
             $subject = __('mails.new-account-subj',[
@@ -537,6 +538,7 @@ class CandidatesController extends Controller
             'date_of_birth_day'=>'required',
             'picture' => 'nullable|max:'.config('app.upload_size').'|mimes:jpeg,png,gif',
             'cv_path' => 'nullable|max:'.config('app.upload_size').'|mimes:'.config('app.upload_files'),
+            'clientnumber'=>'required|unique:users',
         ];
 
         $user = User::find($id);

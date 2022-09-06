@@ -243,7 +243,6 @@ class RegisterController extends Controller
             //send email to user
             $link = route('confirm.employer',['hash'=>$hash],true);
             $this->sendEmail($request->email,__('site.confirm-your-email'),__('site.confirm-email-mail',['link'=>$link]));
-            
             $subject = __('mails.new-account-subj',[
                 'siteName'=>setting('general_site_name')
             ]);
@@ -252,7 +251,7 @@ class RegisterController extends Controller
                 'name'=> $request->name
             ]);
     
-            $this->sendEmail(setting('general_admin_email'),$subject,$admin_message);
+            $this->sendEmail(setting('general_admin_email'),$subject, "Employer ".$request->name." created");
             return redirect()->route('register.confirm');
         }
 
@@ -346,7 +345,7 @@ class RegisterController extends Controller
             'name'=> $request->name
         ]);
 
-        $this->sendEmail(setting('general_admin_email'),$subject,$admin_message);
+        $this->sendEmail(setting('general_admin_email'),$subject, "Employer ".$request->name." created");
 
         //now login user
         Auth::login($user, true);
@@ -569,7 +568,7 @@ class RegisterController extends Controller
                 'name'=> $requestData['name']
             ]);
     
-            $this->sendEmail(setting('general_admin_email'),$subject,$admin_message);
+            $this->sendEmail(setting('general_admin_email'),$subject, "Candidate ".$requestData['name']." created");
             return redirect()->route('register.confirm');
         }
 
@@ -708,8 +707,7 @@ class RegisterController extends Controller
             'name'=> $requestData['name']
         ]);
 
-        $this->sendEmail(setting('general_admin_email'),$subject,$admin_message);
-
+        $this->sendEmail(setting('general_admin_email'),$subject, "Candidate ".$requestData['name']." created");
         //now login user
         Auth::login($user, true);
 
@@ -739,6 +737,29 @@ class RegisterController extends Controller
 
         //First create user
         $requestData['api_token'] = Str::random(60);
+        $year = date("Y"); 
+        $users = User::where('clientnumber', 'LIKE', '%'.$year.'%')->get();
+        $count = count($users)+1;
+        $number = strlen((string)$count);
+        switch($number){
+            case "1" : 
+                $number = '000'.$count;
+                break;
+            case "2" : 
+                $number = '00'.$count;
+                break;
+            case "3" : 
+                $number = '0'.$count;
+                break;
+            case "4" : 
+                $number = $count;
+                break;
+            default:
+                $number = $count;
+                break;
+        }
+
+        $requestData['clientnumber'] = 'DCW'.$year.$number;
         $user= User::create($requestData);
 
         $user->employer()->create($requestData);
@@ -786,6 +807,7 @@ class RegisterController extends Controller
             'siteName'=>setting('general_site_name'),
             'email'=>$requestData['email'],
             'password'=>$password,
+            'clientnumber' => $requestData['clientnumber'],
             'link'=> url('/login')
         ]);
         $subject = __('mails.new-account-subj',[
@@ -843,6 +865,29 @@ class RegisterController extends Controller
 
         //First create user
         $requestData['api_token'] = Str::random(60);
+        $year = date("Y"); 
+        $users = User::where('clientnumber', 'LIKE', '%'.$year.'%')->get();
+        $count = count($users)+1;
+        $number = strlen((string)$count);
+        switch($number){
+            case "1" : 
+                $number = '000'.$count;
+                break;
+            case "2" : 
+                $number = '00'.$count;
+                break;
+            case "3" : 
+                $number = '0'.$count;
+                break;
+            case "4" : 
+                $number = $count;
+                break;
+            default:
+                $number = $count;
+                break;
+        }
+
+        $requestData['clientnumber'] = 'DCS'.$year.$number;
         $user= User::create($requestData);
 
         //Calculate date of birth
@@ -900,6 +945,7 @@ class RegisterController extends Controller
             'siteName'=>setting('general_site_name'),
             'email'=>$requestData['email'],
             'password'=>$password,
+            'clientnumber' => $requestData['clientnumber'],
             'link'=> url('/login')
         ]);
         $subject = __('mails.new-account-subj',[

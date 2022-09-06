@@ -12,7 +12,7 @@
 
             <a href="{{ url('/account/billing/invoices') }}" title="@lang('site.back')"><button class="btn btn-warning btn-sm"><i class="fa fa-arrow-left" aria-hidden="true"></i> @lang('site.back')</button></a>
             <a href="javascript:printDiv('print-content')"><button class="btn btn-success btn-sm"><i class="fa fa-print"></i></button></a>
-            <a href="javascript:window.print()" title="@lang('site.download')"><button class="btn btn-danger btn-sm"><i class="fa fa-download"></i>@lang('site.download')</button></a>
+            <a href="javascript:download()" title="@lang('site.download')"><button class="btn btn-danger btn-sm"><i class="fa fa-download"></i>@lang('site.download')</button></a>
 
             <br />
             <br />
@@ -20,7 +20,8 @@
                 <div class="card-body">
                     <div id="print-content">
                         <div class="invoice-header">
-                            <h1 class="invoice-title"><img src="https://dailycargo.nl/portal/public/uploads/settings/nnH9az4OmCIAuVDBJRWgyPTZSjVpyt6J8s8941bh.png" width="200">@lang('site.invoice')</h1>
+                            <h1 class="invoice-title">@lang('site.invoice')</h1>
+                            <div class="title">@lang('site.invoice')</div>
                             <div class="billed-from">
                                 <h6>{{ setting('general_site_name') }}</h6>
                                 <p>{{ setting('general_address') }}<br>
@@ -45,9 +46,10 @@
                                         @if($address)
                                             {{ $address->address }}<br>
                                             {{ $address->address2 }}<br>
-                                            @lang('site.city'): {{ $address->city }}<br>
-                                            @lang('site.zip'): {{ $address->zip }}<br>
-                                            @lang('site.telephone'): {{ $address->phone }}<br>
+
+                                        @lang('site.city'): {{ $address->city }}<br>
+                                        @lang('site.zip'): {{ $address->zip }}<br>
+                                        @lang('site.telephone'): {{ $address->phone }}<br>
                                         @endif
                                         @lang('site.email'): {{ $invoice->user->email }}</p>
                                 </div>
@@ -115,11 +117,11 @@
                                         $tax = number_format($vat * $amount /100, 2);
                                         $total = number_format(($tax+$amount), 2);
                                     ?>
-                                    <td colspan="2" class="tx-right"><?php echo price($tax); ?></td>
+                                    <td colspan="2" class="tx-right"><?php echo price($tax) ?></td>
                                 </tr>
                                 <tr>
                                     <td class="tx-right tx-uppercase tx-bold tx-inverse">@lang('site.total')</td>
-                                    <td colspan="2" class="tx-right"><h4 class="tx-primary tx-bold"><?php echo price($total); ?></h4></td>
+                                    <td colspan="2" class="tx-right"><h4 class="tx-primary tx-bold"><?php echo price($total) ?></h4></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -139,3 +141,36 @@
 @endsection
 
 @section('content-class','az-content-body-invoice')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+
+<script type="text/javascript">
+    function printDiv(divName) {
+        var divContents = document.getElementById(divName).innerHTML;
+        var a = window.open();
+        a.document.write('<html><head><title>Daily Cargo Invoice</title>');
+        a.document.write('<link rel="stylesheet" href="{{ asset('themes/azia/css/azia.css') }}" type="text/css" />');
+        a.document.write('</head><body >');
+        a.document.write(divContents);
+        a.document.write('</body></html>');
+        a.document.close();
+        a.focus();
+        a.print();
+    }
+    function download() {
+        var element = document.getElementById('print-content');
+        var opt = {
+            jsPDF: {
+                format: 'a4'
+            },
+            pageBreak: { mode: 'css', after:'.break-page'},
+            html2canvas:  { letterRendering: true, useCORS: true,     logging: true},
+            margin: 10, //top, left, buttom, right
+            image: {type: 'jpeg', quality: 1},
+            filename: 'myfile.pdf'
+        };
+        var worker = html2pdf().set(opt).from(element).toPdf().save('myfile.pdf');
+    }
+</script>

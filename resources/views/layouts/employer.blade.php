@@ -126,7 +126,14 @@
                 @endif
                     @if(session()->has('invoice') && \App\Invoice::find(session()->get('invoice')))
                     <div class="az-header-message">
-                        <a href="{{ route('user.invoice.cart') }}"><i class="fa fa-cart-plus"></i> <small>{{ price(\App\Invoice::find(session()->get('invoice'))->amount) }}</small></a>
+                    <?php
+                        $invoice = \App\Invoice::find(session()->get('invoice'));
+                        $vat = number_format(setting('general_vat'));
+                        $amount = number_format($invoice->amount);
+                        $tax = number_format($vat * $amount /100, 2);
+                        $total = number_format(($tax+$amount), 2);
+                    ?>
+                        <a href="{{ route('user.invoice.cart') }}"><i class="fa fa-cart-plus"></i> <small><?php echo price($total) ?></small></a>
                     </div>
                     @endif
                 <div class="dropdown az-profile-menu">

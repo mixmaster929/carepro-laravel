@@ -98,6 +98,15 @@
                                         <div>{{ boolToString($employer->active) }}</div>
                                     </div>
                                 </div>
+                                <div class="row">
+                                        <div class="col-md-6">
+                                            
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label  class="control-label">@lang('site.client_number')</label>
+                                            <div>{{ $employer->clientnumber }}</div>
+                                        </div>
+                                </div>
                             </div>
                         </div>
                     </div>

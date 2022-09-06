@@ -15,12 +15,18 @@
             </thead>
             <tbody>
             <tr>
+                <?php
+                    $vat = number_format(setting('general_vat'));
+                    $amount = number_format($invoice->amount);
+                    $tax = number_format($vat * $amount /100, 2);
+                    $total = number_format(($tax+$amount), 2);
+                ?>
                 <td>#{{ $invoice->id }} </td>
                 <td>{{ $description }}          @if($invoice->orders()->exists())
                         <a target="_blank" href="{{ route('employer.view-order',['order'=>$invoice->orders()->first()->id]) }}">(@lang('site.order') #{{ $invoice->orders()->first()->id }})</a>
                     @endif</td>
-                <td>{!! clean( price($invoice->amount,$invoice->currency_id) ) !!}</td>
-                <td><a  title="@lang('site.delete')"  href="{{ route('user.invoice.cancel') }}"><i class="fa fa-trash"></i></a></td>
+                <td><?php echo price($total) ?></td>
+                <!-- <td><a  title="@lang('site.delete')"  href="{{ route('user.invoice.cancel') }}"><i class="fa fa-trash"></i></a></td> -->
             </tr>
 
 
