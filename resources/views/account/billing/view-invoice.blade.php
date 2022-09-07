@@ -18,10 +18,12 @@
             <br />
             <div class="card card-invoice">
                 <div class="card-body">
-                    <div id="print-content">
+                    <div id="print-content" style="padding: 20px;">
+                        <div>
+                            <img src="http://localhost:8000/uploads/settings/avatar.png" width="200" style="float: right;">
+                        </div><br><br>
                         <div class="invoice-header">
                             <h1 class="invoice-title">@lang('site.invoice')</h1>
-                            <div class="title">@lang('site.invoice')</div>
                             <div class="billed-from">
                                 <h6>{{ setting('general_site_name') }}</h6>
                                 <p>{{ setting('general_address') }}<br>
@@ -165,12 +167,12 @@
             jsPDF: {
                 format: 'a4'
             },
-            pageBreak: { mode: 'css', after:'.break-page'},
-            html2canvas:  { letterRendering: true, useCORS: true,     logging: true},
+            // pageBreak: { mode: 'css', after:'.break-page'},
+            // html2canvas:  { letterRendering: true, useCORS: true,     logging: true},
             margin: 10, //top, left, buttom, right
             image: {type: 'jpeg', quality: 1},
-            filename: 'myfile.pdf'
+            filename: 'invoice.pdf'
         };
-        var worker = html2pdf().set(opt).from(element).toPdf().save('myfile.pdf');
+        var worker = html2pdf().set(opt).from(element).toPdf().save('invoice.pdf');
     }
 </script>
