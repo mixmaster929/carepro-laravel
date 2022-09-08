@@ -538,12 +538,16 @@ class CandidatesController extends Controller
             'date_of_birth_day'=>'required',
             'picture' => 'nullable|max:'.config('app.upload_size').'|mimes:jpeg,png,gif',
             'cv_path' => 'nullable|max:'.config('app.upload_size').'|mimes:'.config('app.upload_files'),
-            'clientnumber'=>'required|unique:users',
+            'clientnumber'=>'required',
         ];
 
         $user = User::find($id);
         if($user->email != $request->email){
             $rules['email'] = 'required|email|string|max:255|unique:users';
+        }
+
+        if($user->clientnumber != $request->clientnumber){
+            $rules['clientnumber'] = 'required|unique:users';
         }
 
 

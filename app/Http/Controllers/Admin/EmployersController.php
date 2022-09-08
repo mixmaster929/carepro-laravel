@@ -271,12 +271,16 @@ class EmployersController extends Controller
             'name'=>'required',
             'email'=>'required|email|string|max:255',
             'status'=>'required',
-            'clientnumber'=>'required|unique:users',
+            'clientnumber'=>'required',
         ];
 
         $user = User::find($id);
         if($user->email != $request->email){
             $rules['email'] = 'required|email|string|max:255|unique:users';
+        }
+
+        if($user->clientnumber != $request->clientnumber){
+            $rules['clientnumber'] = 'required|unique:users';
         }
 
         foreach(EmployerField::get() as $field){
