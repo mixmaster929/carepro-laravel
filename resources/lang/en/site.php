@@ -883,5 +883,6 @@ return [
     'postcode' => 'Postal Code',
     'tax_number' => 'Tax Number',
     'tt_number' => 'Chamber of commerce number',
-    'client_number' => 'Client Number'
+    'client_number' => 'Client Number',
+    'pdf' => 'PDF'
 ];

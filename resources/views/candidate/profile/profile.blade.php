@@ -107,6 +107,23 @@
                             </div>
                         </div>
 
+                        <div class="row">
+                            <div class="form-group col-md-6 {{ $errors->has('public') ? 'has-error' : ''}}">
+                                <label for="public" class="control-label">@lang('site.public')</label>
+                                <select name="public" class="form-control" id="public" >
+                                    @foreach (json_decode('{"0":"'.__('site.no').'","1":"'.__('site.yes').'"}', true) as $optionKey => $optionValue)
+                                        <option value="{{ $optionKey }}" {{ ((null !== old('public',@$candidate->candidate->public)) && old('public',@$candidate->candidate->public) == $optionKey) ? 'selected' : ''}}>{{ $optionValue }}</option>
+                                    @endforeach
+                                </select>
+                                {!! clean( $errors->first('public', '<p class="help-block">:message</p>') ) !!}
+                            </div>
+                            <div class="col-md-6 {{ $errors->has('clientnumber') ? 'has-error' : ''}}">
+                                <label for="clientnumber" class="control-label">@lang('site.client_number')</label>
+                                <input readonly class="form-control" name="clientnumber" type="text" id="clientnumber" value="{{ old('clientnumber',isset($candidate->clientnumber) ? $candidate->clientnumber : '') }}" >
+                                {!! clean( $errors->first('clientnumber', '<p class="help-block">:message</p>') ) !!}
+                            </div> 
+                        </div>
+
 
                         <div class="row">
                             <div class="col-md-6">

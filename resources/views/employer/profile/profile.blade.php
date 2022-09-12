@@ -46,8 +46,13 @@
 
 
                     </div>
-
-
+                    <div class="row">
+                        <div class="col-md-6 {{ $errors->has('clientnumber') ? 'has-error' : ''}}">
+                            <label for="clientnumber" class="control-label">@lang('site.client_number')</label>
+                            <input readonly class="form-control" name="clientnumber" type="text" id="clientnumber" value="{{ old('clientnumber',isset($employer->clientnumber) ? $employer->clientnumber : '') }}" >
+                            {!! clean( $errors->first('clientnumber', '<p class="help-block">:message</p>') ) !!}
+                        </div>                        
+                    </div>
 
 
                 </div>

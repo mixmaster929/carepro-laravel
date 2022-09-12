@@ -30,7 +30,7 @@ class Candidate extends Model
     }
 
     public function changeUserFillable(){
-        $this->fillable =  ['display_name','date_of_birth','gender','picture','cv_path'];
+        $this->fillable =  ['display_name','date_of_birth','gender','picture','cv_path', 'public'];
     }
 
 }

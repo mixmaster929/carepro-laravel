@@ -166,7 +166,9 @@ class InvoicesController extends Controller
         $this->authorize('access','view_invoice');
         $invoice = Invoice::findOrFail($id);
         $controller = $this;
-        return view('admin.invoices.show', compact('invoice','controller'));
+        $address = $this->billingAddress();
+
+        return view('admin.invoices.show', compact('invoice','controller', 'address'));
     }
 
     /**
