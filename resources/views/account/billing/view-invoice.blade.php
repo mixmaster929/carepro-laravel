@@ -27,6 +27,10 @@
                             <div class="billed-from">
                                 <h6>{{ setting('general_site_name') }}</h6>
                                 <p>{{ setting('general_address') }}<br>
+                                @if($address)
+                                @lang('site.zip'): {{ $address->zip }}<br>
+                                @lang('site.city'): {{ $address->city }}<br>
+                                @endif
                                     @lang('site.telephone'): {{ setting('general_tel') }}<br>
                                     @lang('site.email'): {{ setting('general_contact_email') }}<br>
                                     @lang('settings.general_tax_number'): {{ setting('general_tax_number') }}<br>
@@ -48,10 +52,7 @@
                                         @if($address)
                                             {{ $address->address }}<br>
                                             {{ $address->address2 }}<br>
-
-                                        @lang('site.city'): {{ $address->city }}<br>
-                                        @lang('site.zip'): {{ $address->zip }}<br>
-                                        @lang('site.telephone'): {{ $address->phone }}<br>
+                                            @lang('site.telephone'): {{ $address->phone }}<br>
                                         @endif
                                         @lang('site.email'): {{ $invoice->user->email }}</p>
                                 </div>

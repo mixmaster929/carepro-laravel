@@ -884,5 +884,11 @@ return [
     'tax_number' => 'Tax Number',
     'tt_number' => 'Chamber of commerce number',
     'client_number' => 'Client Number',
-    'pdf' => 'PDF'
+    'pdf' => 'PDF',
+    'interview_planned' => 'Interview Planned',
+    'placed' => 'Placed',
+    'app_allowed' => 'Your application was allowed',
+    'app_denied' => 'Your application was denied',
+    'has_made_vacancy' => 'has made a Vacancy: ',
+    'interview_canceled' => 'Your interview is canceled'
 ];

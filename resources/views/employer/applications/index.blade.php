@@ -146,6 +146,23 @@
                     </thead>
                     <tbody>
                     @foreach($applications as $item)
+                    <?php
+                        if($application->status == 'pending'){
+                            $status = 'site.pending';
+                        }
+                        if($application->status == 'allow'){
+                            $status = 'site.allow';
+                        }
+                        if($application->status == 'deny'){
+                            $status = 'site.deny';
+                        }
+                        if($application->status == 'Interview Planned'){
+                            $status = 'site.interview_planned';
+                        }
+                        if($application->status == 'Placed'){
+                            $status = 'site.placed';
+                        }
+                    ?>
                         <tr>
                             <td>{{ $loop->iteration + ( (Request::get('page',1)-1) *$perPage) }}</td>
                             <td>
@@ -167,7 +184,7 @@
                                 {{ boolToString($item->shortlisted) }}
                             </td>
                             <td>{{ \Illuminate\Support\Carbon::parse($item->created_at)->format('d/M/Y') }}</td>
-			                <td>{{ $item->status }}</td>
+			                <td>@lang($status)</td>
                             <td>
                                 <div class="btn-group dropup">
                                     <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

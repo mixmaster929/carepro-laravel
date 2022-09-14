@@ -129,7 +129,7 @@ class ApplicationsController extends Controller
     {
         $application = Application::findOrFail($id);
         $update = $application->update(['status' => 'allow']);
-        $this->sendEmail($application->user->email, 'Application', 'Your application was allowed');
+        $this->sendEmail($application->user->email, __('site.application'), __('site.app_allowed'));
         return redirect('employer/application-records/'.$application->vacancy_id)->with('flash_message', __('Status changes'));
     }
 
@@ -137,7 +137,7 @@ class ApplicationsController extends Controller
     {
         $application = Application::findOrFail($id);
         $application->update(['status' => 'deny']);
-        $this->sendEmail($application->user->email, 'Application', 'Your application was denied');
+        $this->sendEmail($application->user->email, __('site.application'), __('site.app_denied'));
         return redirect('employer/application-records/'.$application->vacancy_id)->with('flash_message', __('Status changes'));
     }
 

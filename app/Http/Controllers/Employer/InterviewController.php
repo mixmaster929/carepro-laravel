@@ -90,13 +90,13 @@ class InterviewController extends Controller
         $this->sendEmail($candidate->email, $subject, $candidate->name." is placed at ".$employer->name." from date: ".$requestData['start_date']." to ".$end_date);
         $this->sendEmail(setting('general_admin_email'), $subject, "Employer ".$employer->name." has placed candidate ".$candidate->name);
         
-        try{
-            // Mail::to($interview->user->email)->send(New InterviewAlert($interview));
-            Mail::to($application->user->email)->send(New InterviewAlert($interview));
-        }
-        catch(\Exception $ex){
-            $this->warningMessage(__('site.mail-error').': '.$ex->getMessage());
-        }
+        // try{
+        //     // Mail::to($interview->user->email)->send(New InterviewAlert($interview));
+        //     Mail::to($application->user->email)->send(New InterviewAlert($interview));
+        // }
+        // catch(\Exception $ex){
+        //     $this->warningMessage(__('site.mail-error').': '.$ex->getMessage());
+        // }
 
         return redirect('employer/application-records/'.$application->vacancy_id)->with('flash_message', __('site.changes-saved'));
     }
@@ -180,7 +180,7 @@ class InterviewController extends Controller
 
         Interview::destroy($interview->id);
 
-        $this->sendEmail($email, "Delete Interview", "Your interview is cancelled");
+        $this->sendEmail($email, __('site.delete-interview'), __('site.interview_canceled'));
 
         return redirect('employer/interviews')->with('flash_message', __('site.changes-saved'));
     }
