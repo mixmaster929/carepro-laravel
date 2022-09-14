@@ -111,7 +111,7 @@ class VacanciesController extends Controller
             'name'=>$user->name,
             'title'=> $requestData['title'],
             'location' => $requestData['location'],
-            'closes_at' => $$requestData['closes_at']
+            'closes_at' => $requestData['closes_at']
         ]);
 
         $this->sendEmail(setting('general_admin_email'), $subject, $message);

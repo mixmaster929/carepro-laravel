@@ -27,10 +27,6 @@
                             <div class="billed-from">
                                 <h6>{{ setting('general_site_name') }}</h6>
                                 <p>{{ setting('general_address') }}<br>
-                                @if($address)
-                                @lang('site.zip'): {{ $address->zip }}<br>
-                                @lang('site.city'): {{ $address->city }}<br>
-                                @endif
                                     @lang('site.telephone'): {{ setting('general_tel') }}<br>
                                     @lang('site.email'): {{ setting('general_contact_email') }}<br>
                                     @lang('settings.general_tax_number'): {{ setting('general_tax_number') }}<br>
@@ -52,6 +48,8 @@
                                         @if($address)
                                             {{ $address->address }}<br>
                                             {{ $address->address2 }}<br>
+                                            @lang('site.zip'): {{ $address->zip }}<br>
+                                            @lang('site.city'): {{ $address->city }}<br>
                                             @lang('site.telephone'): {{ $address->phone }}<br>
                                         @endif
                                         @lang('site.email'): {{ $invoice->user->email }}</p>
@@ -168,10 +166,10 @@
             jsPDF: {
                 format: 'a4'
             },
-            // pageBreak: { mode: 'css', after:'.break-page'},
-            // html2canvas:  { letterRendering: true, useCORS: true,     logging: true},
+            pageBreak: { mode: 'css', after:'.break-page'},
+            html2canvas:  { scale: 2, useCORS: false, allowTaint: true },
             margin: 10, //top, left, buttom, right
-            image: {type: 'jpeg', quality: 1},
+            image: {type: 'png', quality: 1},
             filename: 'invoice.pdf'
         };
         var worker = html2pdf().set(opt).from(element).toPdf().save('invoice.pdf');

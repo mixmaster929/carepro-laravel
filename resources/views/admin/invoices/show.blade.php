@@ -57,10 +57,9 @@
                                                     @if($address)
                                                         {{ $address->address }}<br>
                                                         {{ $address->address2 }}<br>
-
-                                                    @lang('site.city'): {{ $address->city }}<br>
-                                                    @lang('site.zip'): {{ $address->zip }}<br>
-                                                    @lang('site.telephone'): {{ $address->phone }}<br>
+                                                        @lang('site.city'): {{ $address->city }}<br>
+                                                        @lang('site.zip'): {{ $address->zip }}<br>
+                                                        @lang('site.telephone'): {{ $address->phone }}<br>
                                                     @endif
                                                     @lang('site.email'): {{ $invoice->user->email }}</p>
                                             </div>

@@ -145,7 +145,7 @@ class ApplicationsController extends Controller
         $application->update(['status' => 'deny']);
         $title = $application->vacancy->title? $application->vacancy->title : null;
         $name = $application->user->name? $application->user->name : null;
-        $message = __('site.app_allowed',[
+        $message = __('site.app_denied',[
             'title'=>$title,
             'name'=> $name
         ]);
