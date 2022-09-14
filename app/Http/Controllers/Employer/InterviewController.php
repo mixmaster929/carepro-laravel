@@ -85,10 +85,20 @@ class InterviewController extends Controller
         $end_date = $request->end_date? $request->end_date : '';
 
         $subject = __('site.make-placement');
+        $message = __('site.notification_placement_to_users',[
+            'candidate'=>$candidate->name,
+            'employer'=> $employer->name,
+            'start_date' => $requestData['start_date'],
+            'end_date' => $end_date
+        ]);
+        $admin_message = __('site.notification_placement_to_admin',[
+            'candidate'=>$candidate->name,
+            'employer'=> $employer->name,
+        ]);
 
-        $this->sendEmail($employer->email, $subject, $candidate->name." is placed at ".$employer->name." from date: ".$requestData['start_date']." to ".$end_date);
-        $this->sendEmail($candidate->email, $subject, $candidate->name." is placed at ".$employer->name." from date: ".$requestData['start_date']." to ".$end_date);
-        $this->sendEmail(setting('general_admin_email'), $subject, "Employer ".$employer->name." has placed candidate ".$candidate->name);
+        $this->sendEmail($employer->email, $subject, $message);
+        $this->sendEmail($candidate->email, $subject, $message);
+        $this->sendEmail(setting('general_admin_email'), $subject, $admin_message);
         
         // try{
         //     // Mail::to($interview->user->email)->send(New InterviewAlert($interview));

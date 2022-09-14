@@ -246,12 +246,12 @@ class RegisterController extends Controller
             $subject = __('mails.new-account-subj',[
                 'siteName'=>setting('general_site_name')
             ]);
-            $admin_message = __('mails.new-account',[
-                'siteName'=>setting('general_site_name'),
+            $admin_message = __('site.register_account',[
+                'user'=>'Employer',
                 'name'=> $request->name
             ]);
     
-            $this->sendEmail(setting('general_admin_email'),$subject, "Employer ".$request->name." created");
+            $this->sendEmail(setting('general_admin_email'),$subject, $admin_message);
             return redirect()->route('register.confirm');
         }
 
@@ -340,12 +340,13 @@ class RegisterController extends Controller
         ]);
         $this->sendEmail($requestData['email'],$subject,$message);
 
-        $admin_message = __('mails.new-account',[
-            'siteName'=>setting('general_site_name'),
+        $admin_message = __('site.register_account',[
+            'user' => 'Employer',
             'name'=> $request->name
         ]);
+        
 
-        $this->sendEmail(setting('general_admin_email'),$subject, "Employer ".$request->name." created");
+        $this->sendEmail(setting('general_admin_email'),$subject, $admin_message);
 
         //now login user
         Auth::login($user, true);
@@ -563,12 +564,12 @@ class RegisterController extends Controller
                 'siteName'=>setting('general_site_name')
             ]);
     
-            $admin_message = __('mails.new-account',[
-                'siteName'=>setting('general_site_name'),
+            $admin_message = __('site.register_account',[
+                'user'=>'Candidate',
                 'name'=> $requestData['name']
             ]);
     
-            $this->sendEmail(setting('general_admin_email'),$subject, "Candidate ".$requestData['name']." created");
+            $this->sendEmail(setting('general_admin_email'),$subject, $admin_message);
             return redirect()->route('register.confirm');
         }
 
@@ -702,12 +703,12 @@ class RegisterController extends Controller
         ]);
         $this->sendEmail($requestData['email'],$subject,$message);
 
-        $admin_message = __('mails.new-account',[
-            'siteName'=>setting('general_site_name'),
+        $admin_message = __('site.register_account',[
+            'user'=>'Candidate',
             'name'=> $requestData['name']
         ]);
 
-        $this->sendEmail(setting('general_admin_email'),$subject, "Candidate ".$requestData['name']." created");
+        $this->sendEmail(setting('general_admin_email'),$subject, $admin_message);
         //now login user
         Auth::login($user, true);
 

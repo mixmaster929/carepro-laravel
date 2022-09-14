@@ -107,7 +107,14 @@ class VacanciesController extends Controller
         }
 
         $subject = __('site.create-vacancy');
-        $this->sendEmail(setting('general_admin_email'), $subject, __('site.employer')." ".$user->name." ".__('site.has_made_vacancy').$requestData['title']." ".__('site.location')." ".$requestData['location']." ".__('site.closing-date')." ".$requestData['closes_at']);
+        $message = __('site.create-vacancy_to_admin',[
+            'name'=>$user->name,
+            'title'=> $requestData['title'],
+            'location' => $requestData['location'],
+            'closes_at' => $$requestData['closes_at']
+        ]);
+
+        $this->sendEmail(setting('general_admin_email'), $subject, $message);
 
         return redirect('employer/vacancies')->with('flash_message', __('site.changes-saved'));
     }

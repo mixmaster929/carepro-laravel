@@ -887,8 +887,12 @@ return [
     'pdf' => 'PDF',
     'interview_planned' => 'Interview Planned',
     'placed' => 'Placed',
-    'app_allowed' => 'Your application was allowed',
-    'app_denied' => 'Your application was denied',
+    'app_allowed' => 'Dear :name<br><br> your application :title was allowed',
+    'app_denied' => 'Dear :name<br><br>Your application :title was denied',
     'has_made_vacancy' => 'has made a Vacancy: ',
-    'interview_canceled' => 'Your interview is canceled'
+    'interview_canceled' => 'Your interview is canceled',
+    'register_account' => ':user :name was created',
+    'notification_placement_to_users' => ':candidate is placed at :employer from date :start_date to :end_date',
+    'notification_placement_to_admin' => 'Employer :employer has placed candidate :candidate',
+    'create-vacancy_to_admin' => 'Employer :name has made a vacancy :title, location :location, closing Date :closes_at',
 ];
