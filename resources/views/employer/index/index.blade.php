@@ -128,7 +128,22 @@
         </div>
     </div>
 
+    <div class="card bd-0">
+        <div class="card-header tx-medium bd-0 tx-white bg-indigo">
+            <i class="fa fa-clipboard-list"></i>  @lang('site.vacancy')
+        </div><!-- card-header -->
+        <div class="card-body bd bd-t-0">
+            @if($vacancies->count()==0)
+                <p class="mg-b-0">@lang('site.no-records')</p>
+            @else
+                @include('employer.vacancies.order-list',['vacancies'=>$vacancies])
+            @endif
 
+        </div><!-- card-body -->
+        <div class="card-footer bd-t tx-center">
+            <a href="{{ route('employer.vacancies.index') }}">@lang('site.view-all')</a>
+        </div>
+    </div>
 
     <br/>
     <div class="card bd-0">

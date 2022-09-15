@@ -137,7 +137,10 @@
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <th>#</th><th>@lang('site.name')</th><th>@lang('site.applications')</th>
+                                        <th>#</th>
+                                        <th>@lang('site.name')</th>
+                                        <th>@lang('site.creator')</th>
+                                        <th>@lang('site.applications')</th>
                                         <th>@lang('site.added-on')</th>
                                         <th>@lang('site.closing-date')</th>
                                         <th>@lang('site.enabled')</th>
@@ -148,7 +151,9 @@
                                 @foreach($vacancies as $item)
                                     <tr>
                                         <td>{{ $loop->iteration + ( (Request::get('page',1)-1) *$perPage) }}</td>
-                                        <td>{{ $item->title }}</td><td>{{ $item->applications()->count() }}</td>
+                                        <td>{{ $item->title }}</td>
+                                        <td>{{ $item->user? $item->user->name : "Admin" }}</td>
+                                        <td>{{ $item->applications()->count() }}</td>
                                         <td>{{ \Illuminate\Support\Carbon::parse($item->created_at)->format('d/M/Y') }}</td>
 
                                         <td>@if(!empty($item->closes_at))

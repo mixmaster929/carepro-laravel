@@ -21,6 +21,10 @@
             @endif
 
             <p class="card-text">{!! clean( check($vacancy->description) ) !!}</p>
+
+            <p class="card-text">@lang('site.location')<hr>{{ $vacancy->location }}</p>
+            <p class="card-text">@lang('site.salary')<hr>{{ $vacancy->salary }}</p>
+            <p class="card-text">@lang('site.category')<hr>{{ $vacancy->category }}</p>
             <a onclick="return confirm('@lang('site.confirm-application')')" href="{{ route('candidate.vacancy.apply',['vacancy'=>$vacancy->id]) }}" class="card-link btn btn-primary btn-block">@lang('site.apply')</a>
         </div>
     </div>

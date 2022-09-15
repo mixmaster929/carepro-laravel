@@ -34,7 +34,7 @@
                     <tr>
                         <td>{{ $loop->iteration + ( (Request::get('page',1)-1) *$perPage) }}</td>
                         <td>{{ $item->name }}</td>
-                        <td>{{ $item->user->name}}</td>
+                        <td>{{ $item->user? $item->user->name : "Admin"}}</td>
                         <td>{{ empty($item->status)? __('site.disabled'):__('site.enabled') }}</td>
                         <td>{{ $item->testQuestions()->count() }}</td>
                         <td>{{ $item->userTests()->count() }}</td>

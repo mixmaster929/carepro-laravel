@@ -15,4 +15,8 @@ class Vacancy extends Model
     public function jobCategories(){
         return $this->belongsToMany(JobCategory::class);
     }
+
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
 }

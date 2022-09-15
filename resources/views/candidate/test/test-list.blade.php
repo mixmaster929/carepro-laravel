@@ -16,7 +16,7 @@
             <tr>
                 <td>{{ $loop->iteration + ( (Request::get('page',1)-1) * $perPage) }}</td>
                 <td>{{ $test->name }}</td>
-                <td>{{ $test->user? $test->user->name : null }}</td>
+                <td>{{ $test->user? $test->user->name : "Admin" }}</td>
                 <td>{{ empty($test->minutes) ? __('site.unlimited'):$test->minutes.' '.__('site.minutes') }}</td>
                 <td>{{ empty($test->allow_multiple)? __('site.single'):__('site.multiple') }}</td>
                 <td>{{ $test->passmark }}%</td>

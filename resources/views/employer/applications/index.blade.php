@@ -147,19 +147,19 @@
                     <tbody>
                     @foreach($applications as $item)
                     <?php
-                        if($application->status == 'pending'){
+                        if($item->status == 'pending'){
                             $status = 'site.pending';
                         }
-                        if($application->status == 'allow'){
+                        if($item->status == 'allow'){
                             $status = 'site.allow';
                         }
-                        if($application->status == 'deny'){
+                        if($item->status == 'deny'){
                             $status = 'site.deny';
                         }
-                        if($application->status == 'Interview Planned'){
+                        if($item->status == 'Interview Planned'){
                             $status = 'site.interview_planned';
                         }
-                        if($application->status == 'Placed'){
+                        if($item->status == 'Placed'){
                             $status = 'site.placed';
                         }
                     ?>

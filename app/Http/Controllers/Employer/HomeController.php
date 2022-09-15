@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Employer;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Vacancy;
 
 class HomeController extends Controller
 {
@@ -17,11 +18,13 @@ class HomeController extends Controller
         $output['orders'] = Auth::user()->orders()->latest()->limit(5)->get();
         $output['invoices'] = Auth::user()->invoices()->latest()->limit(5)->get();
         $output['placements'] = Auth::user()->employer->employments()->limit(5)->get();
+        $output['vacancies'] = Vacancy::where('user_id', $user->id)->latest()->limit(5)->get();
 
         $output['invoiceTotal'] = Auth::user()->invoices()->count();
         $output['orderTotal'] = Auth::user()->orders()->count();
         $output['placementTotal'] = Auth::user()->employer->employments()->count();
         $output['interviewTotal'] = Auth::user()->interviews()->count();
+        $output['vacancyTotal'] = Vacancy::where('user_id', $user->id)->count();
 
         return view('employer.index.index',$output);
     }
