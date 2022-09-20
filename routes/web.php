@@ -441,6 +441,9 @@ Route::group(['middleware'=>['auth'],'prefix' => 'account', 'as' => 'user.','nam
     //Route::any('checkout/callback','InvoiceController@callback')->name('invoice.callback')->middleware('cart');
     Route::post('cart/set-method','InvoiceController@setMethod')->name('invoice.set-method');
     Route::get('payment-complete','InvoiceController@complete')->name('invoice.payment-complete');
+    Route::post('stripe_credit','CallbackController@stripe_credit')->name('front.stripe_credit');
+    Route::get('payment/success','CallbackController@paymentSuccess')->name('success.payment');
+    Route::any('checkout_post_3','CallbackController@checkout_post_3')->name('front.checkout_post_3');
     Route::any('callback/{code}','CallbackController@method')->name('callback')->middleware('cart');
   /*  Route::get('paypal/setup','PaypalController@setup')->name('paypal.setup');
     Route::get('paypal/callback','PaypalController@callback')->name('paypal.callback');*/

@@ -1,5 +1,9 @@
 @extends($userLayout)
 
+@section('header')
+<link href="{{ asset('css/stripe.css') }}" rel="stylesheet" type="text/css" />
+@endsection
+
 @section('page-title',__('site.checkout'))
 
 @section('breadcrumb')
@@ -91,11 +95,30 @@
                     </tbody>
                 </table>
                 </p>
-                @yield('payment-form')
+                <form id="payment-form" class="col-12">
+                    <div id="payment-element">
+                        <!--Stripe.js injects the Payment Element-->
+                    </div>
+                    <button id="submit">
+                        <div class="spinner hidden" id="spinner"></div>
+                        <span id="button-text">Pay Now</span>(<?php echo price($total); ?>)
+                    </button>
+                    <div id="payment-message" class="hidden"></div>
+                </form>
+                <!-- @yield('payment-form') -->
 
             </div>
         </div>
     </div>
 </div>
 
+@endsection
+@section('footer')
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+  stripe_url = "{{route('user.front.stripe_credit')}}";
+  complete_url = "{{route('user.success.payment')}}"
+  checkout_post = "{{route('user.front.checkout_post_3')}}"
+</script>
+<script src="{{ asset('js/stripe.js') }}"></script>
 @endsection

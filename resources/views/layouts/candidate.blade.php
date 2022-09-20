@@ -178,7 +178,7 @@
 <script src="{{ asset('themes/azia/lib/ionicons/ionicons.js') }}"></script>
 <script src="{{ asset('themes/azia/lib/jquery-sparkline/jquery.sparkline.min.js') }}"></script>
 <script src="{{ asset('themes/azia/lib/raphael/raphael.min.js') }}"></script>
-<script src="{{ asset('themes/azia/lib/morris.js/morris.min.js_') }}"></script>
+<script src="{{ asset('themes/azia/lib/morris.js/morris.min.js') }}"></script>
 <script src="{{ asset('themes/azia/lib/jqvmap/jquery.vmap.min.js') }}"></script>
 <script src="{{ asset('themes/azia/lib/jqvmap/maps/jquery.vmap.usa.js') }}"></script>
 

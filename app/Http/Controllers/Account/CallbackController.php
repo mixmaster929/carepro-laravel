@@ -10,7 +10,10 @@ use Omnipay\Omnipay;
 use Stripe\Charge;
 use Stripe\Customer;
 use Stripe\Stripe;
+use Stripe\Event;
 use Unirest\Request\Body;
+use Stripe\PaymentIntent;
+use Illuminate\Support\Facades\Log;
 
 class CallbackController extends Controller
 {
@@ -80,7 +83,87 @@ class CallbackController extends Controller
 
         return redirect()->route('user.invoice.cart');
     }
+    public function paymentSuccess(Request $request)
+    {
+        // dd($request->redirect_status);
+        $invoiceId = session()->get('invoice');
+        $invoice = Invoice::find($invoiceId);
+        if($request->redirect_status == "succeeded"){
+            $msg=  $this->approveInvoice($invoice);
+            $this->successMessage($msg);
+        }
+        return redirect()->route('user.billing.invoices');
+    }
+    public function stripe_credit(Request $request){
+        $invoiceId = session()->get('invoice');
+        $invoice = Invoice::find($invoiceId);
+        $address = $this->billingAddress();
 
+        $vat = number_format(setting('general_vat'));
+        $amount = number_format($invoice->amount);
+        $tax = number_format($vat * $amount /100, 2);
+        $total = number_format(($tax+$amount), 2);
+
+        try {
+            Stripe::setApiKey('sk_test_51LFaSkIZUe4AePpOUnEw42fiPDKYiKUbxMAXUD1ynSwoeen9qfbqJU3znrecoPETyCqOR1aM2i5MjUV4PuPxekAM00LeAl35x2');
+            
+            $customer = Customer::create([
+                'email'=>$invoice->user->email,
+                'name' => $invoice->user->name,
+                'description' => $invoice->user->clientnumber,
+            ]);
+            Log::info("ddd=>".json_encode($customer));
+            $paymentIntent = PaymentIntent::create([
+                'amount' => $total * 100,
+                'description' => $invoice->id." | ".$invoice->title." | ".$invoice->description,
+                'customer' => $customer->id,
+                'currency' => 'eur',
+                // 'automatic_payment_methods' => ([
+                //     'enabled' => true
+                // ]),
+              
+                'payment_method_types' => ([
+                    'bancontact',
+                    'card',
+                    'ideal',
+                    'sepa_debit',
+                ]),
+                // 'billing_details' => ([
+                //     'name' => 'afe',
+                //     'phone' => 'dd',
+                //     'email' => 'cc',
+                //     'address' => ([
+                //         "city" => 'xxx',
+                //     ]),
+                // ])
+            ]);
+            // PaymentIntent::attach(
+            //     $paymentIntent->id,
+            //     ['customer' => $customer->id]
+            // );
+            Log::info("paymentIntent=>".json_encode($paymentIntent));
+            
+            $output = [
+                'clientSecret' => $paymentIntent->client_secret,
+            ];
+            
+
+            // $charge = Charge::create(array(
+            //     'customer' => $customer->id,
+            //     'amount'   => ($total * 100),
+            //     'currency' => strtolower(trim(setting('general_currency_code')))
+            // ));
+
+            // $msg=  $this->approveInvoice($invoice);
+            // $this->successMessage($msg);
+            // return redirect()->route('user.billing.invoices');
+
+            echo json_encode($output);
+        } catch (Error $e) {
+            http_response_code(500);
+            echo json_encode(['error' => $e->getMessage()]);
+        }
+    }
     public function stripe(){
 
         if(!request()->isMethod('post'))
