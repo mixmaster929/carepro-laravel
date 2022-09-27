@@ -641,6 +641,30 @@ class EmployersController extends Controller
                 if($request->update==1){
                     $user = User::where('email',$employerData['email'])->first();
 
+                    $year = date("Y"); 
+                    $users = User::where('clientnumber', 'LIKE', '%'.$year.'%')->get();
+                    $count = count($users)+1;
+                    $number = strlen((string)$count);
+                    switch($number){
+                        case "1" : 
+                            $number = '000'.$count;
+                            break;
+                        case "2" : 
+                            $number = '00'.$count;
+                            break;
+                        case "3" : 
+                            $number = '0'.$count;
+                            break;
+                        case "4" : 
+                            $number = $count;
+                            break;
+                        default:
+                            $number = $count;
+                            break;
+                    }
+
+                    $employerData['clientnumber'] = 'DCW'.$year.$number;
+
                     $user->update($employerData);
                     //$user->employer()->update($employerData);
 
@@ -664,6 +688,30 @@ class EmployersController extends Controller
                 $password = Str::random(8);
                 $employerData['password'] = Hash::make($password);
                 $employerData['role_id']= 2;
+
+                $year = date("Y"); 
+                $users = User::where('clientnumber', 'LIKE', '%'.$year.'%')->get();
+                $count = count($users)+1;
+                $number = strlen((string)$count);
+                switch($number){
+                    case "1" : 
+                        $number = '000'.$count;
+                        break;
+                    case "2" : 
+                        $number = '00'.$count;
+                        break;
+                    case "3" : 
+                        $number = '0'.$count;
+                        break;
+                    case "4" : 
+                        $number = $count;
+                        break;
+                    default:
+                        $number = $count;
+                        break;
+                }
+
+                $employerData['clientnumber'] = 'DCW'.$year.$number;
                 $user= User::create($employerData);
                 $user->employer()->create($employerData);
 
@@ -682,6 +730,7 @@ class EmployersController extends Controller
                         'siteName'=>setting('general_site_name'),
                         'email'=>$employerData['email'],
                         'password'=>$password,
+                        'clientnumber' => $requestData['clientnumber'],
                         'link'=> url('/login')
                     ]);
                     $subject = __('mails.new-account-subj',[
