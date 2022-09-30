@@ -17,8 +17,6 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
 use ParseCsv\Csv;
-use Illuminate\Support\Facades\Log;
-
 
 class EmployersController extends Controller
 {
@@ -148,9 +146,43 @@ class EmployersController extends Controller
                 $number = $count;
                 break;
         }
+        $clients = User::where('clientnumber', 'LIKE', '%'.$year.'%')->select('clientnumber')->orderBy('clientnumber')->get();
+        $ddd = [];
+        foreach($clients as $key => $each){
+            $ddd[] = substr($each->clientnumber, -4);
+        }
+        if(User::where('clientnumber', 'LIKE', '%'.$year.$number)->first()){
+            for($i=1; $i<=$count; $i++){
+                $num = strlen((string)$i);
+                switch($num){
+                    case "1" : 
+                        $_number = '000'.$i;
+                        break;
+                    case "2" : 
+                        $_number = '00'.$i;
+                        break;
+                    case "3" : 
+                        $_number = '0'.$i;
+                        break;
+                    case "4" : 
+                        $_number = $i;
+                        break;
+                    default:
+                        $_number = $i;
+                        break;
+                }
+                $result = in_array($_number, $ddd);
+                if($result == false){
+                    $requestData['clientnumber'] = 'DCW'.$year.$_number;
+                }
+            }
+        }
+        else
+        {
+            $requestData['clientnumber'] = 'DCW'.$year.$number;
+        }
 
-        $requestData['clientnumber'] = 'DCW'.$year.$number;
-
+        
         //First create user
         $user= User::create($requestData);
 
@@ -410,7 +442,6 @@ class EmployersController extends Controller
 
 
     public function search(Request $request){
-        Log::info($request);
 
         $keyword = $request->get('term');
 
@@ -418,7 +449,7 @@ class EmployersController extends Controller
             return response()->json([]);
         }
 
-        $employers = User::where('role_id',2)->where(function($query) use($keyword){
+       $employers = User::where('role_id',2)->where(function($query) use($keyword){
             $query->whereHas('employer', function (Builder $query) use ($keyword) {
                 })->orWhere(function($query) use($keyword){
                     $query->where('name','LIKE','%'.$keyword.'%')->orWhere('email','LIKE','%'.$keyword.'%')->orWhere('telephone','LIKE','%'.$keyword.'%');
@@ -433,7 +464,6 @@ class EmployersController extends Controller
             }
             elseif($request->get('format')=='candidate_id'){
                 $formattedUsers[] = ['id'=>$candidate->candidate->id,'text'=>"{$candidate->name} <{$candidate->email}>"];
-
             }
             else{
                 $formattedUsers[] = ['id'=>$employer->id,'text'=>"{$employer->name} <{$employer->email}>"];
@@ -634,36 +664,67 @@ class EmployersController extends Controller
             if(empty($employerData['name']) || empty($employerData['email'])){
                 continue;
             }
+            $year = date("Y"); 
+            $users = User::where('clientnumber', 'LIKE', '%'.$year.'%')->get();
+            $count = count($users)+1;
+            $number = strlen((string)$count);
+                switch($number){
+                case "1" : 
+                $number = '000'.$count;
+                break;
+                case "2" : 
+                $number = '00'.$count;
+                break;
+                case "3" : 
+                $number = '0'.$count;
+                break;
+                case "4" : 
+                $number = $count;
+                break;
+                default:
+                $number = $count;
+                break;
+            }
 
+            $clients = User::where('clientnumber', 'LIKE', '%'.$year.'%')->select('clientnumber')->orderBy('clientnumber')->get();
+            $ddd = [];
+            foreach($clients as $key => $each){
+                $ddd[] = substr($each->clientnumber, -4);
+            }
+            if(User::where('clientnumber', 'LIKE', '%'.$year.$number)->first()){
+                for($i=1; $i<=$count; $i++){
+                    $num = strlen((string)$i);
+                    switch($num){
+                        case "1" : 
+                            $_number = '000'.$i;
+                            break;
+                        case "2" : 
+                            $_number = '00'.$i;
+                            break;
+                        case "3" : 
+                            $_number = '0'.$i;
+                            break;
+                        case "4" : 
+                            $_number = $i;
+                            break;
+                        default:
+                            $_number = $i;
+                            break;
+                    }
+                    $result = in_array($_number, $ddd);
+                    if($result == false){
+                        $employerData['clientnumber'] = 'DCW'.$year.$_number;
+                    }
+                }
+            }
+            else{
+                $employerData['clientnumber'] = 'DCW'.$year.$number;
+            }
 
 
             if(User::where('email',$employerData['email'])->exists()){
                 if($request->update==1){
                     $user = User::where('email',$employerData['email'])->first();
-
-                    $year = date("Y"); 
-                    $users = User::where('clientnumber', 'LIKE', '%'.$year.'%')->get();
-                    $count = count($users)+1;
-                    $number = strlen((string)$count);
-                    switch($number){
-                        case "1" : 
-                            $number = '000'.$count;
-                            break;
-                        case "2" : 
-                            $number = '00'.$count;
-                            break;
-                        case "3" : 
-                            $number = '0'.$count;
-                            break;
-                        case "4" : 
-                            $number = $count;
-                            break;
-                        default:
-                            $number = $count;
-                            break;
-                    }
-
-                    $employerData['clientnumber'] = 'DCW'.$year.$number;
 
                     $user->update($employerData);
                     //$user->employer()->update($employerData);
@@ -688,32 +749,9 @@ class EmployersController extends Controller
                 $password = Str::random(8);
                 $employerData['password'] = Hash::make($password);
                 $employerData['role_id']= 2;
-
-                $year = date("Y"); 
-                $users = User::where('clientnumber', 'LIKE', '%'.$year.'%')->get();
-                $count = count($users)+1;
-                $number = strlen((string)$count);
-                switch($number){
-                    case "1" : 
-                        $number = '000'.$count;
-                        break;
-                    case "2" : 
-                        $number = '00'.$count;
-                        break;
-                    case "3" : 
-                        $number = '0'.$count;
-                        break;
-                    case "4" : 
-                        $number = $count;
-                        break;
-                    default:
-                        $number = $count;
-                        break;
-                }
-
-                $employerData['clientnumber'] = 'DCW'.$year.$number;
                 $user= User::create($employerData);
                 $user->employer()->create($employerData);
+                $user->employer()->create($requestData);
 
 
                 $cfields = EmployerField::where('type','!=','file')->get();
@@ -726,14 +764,14 @@ class EmployersController extends Controller
 
                 //notify
                 if($request->notify==1){
-                    $message = __('mails.new-account',[
+                    $message = __('mails.new-account-import',[
                         'siteName'=>setting('general_site_name'),
                         'email'=>$employerData['email'],
                         'password'=>$password,
-                        'clientnumber' => $requestData['clientnumber'],
+                        'clientnumber' => $employerData['clientnumber'],
                         'link'=> url('/login')
                     ]);
-                    $subject = __('mails.new-account-subj',[
+                    $subject = __('mails.new-account-subj-import',[
                         'siteName'=>setting('general_site_name')
                     ]);
                     $this->sendEmail($requestData['email'],$subject,$message);
