@@ -59,7 +59,7 @@
                                 <form action="{{ route('admin.vacancies.index') }}" method="get">
 
                                     <div class="row">
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <div class="form-group">
                                                 <label for="search" class="control-label">@lang('site.search')</label>
                                                 <input class="form-control" type="text" value="{{ request()->search  }}" name="search"/>
@@ -67,7 +67,7 @@
                                         </div>
 
 
-                                            <div class="col-md-3">
+                                            <div class="col-md-2">
                                                 <div class="form-group">
                                                     <label for="category" class="control-label">@lang('site.category')</label>
                                                     <select  class="form-control" name="category" id="category">
@@ -80,7 +80,31 @@
                                                 </div>
                                             </div>
 
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <label for="region" class="control-label">@lang('site.region')</label>
+                                                    <select  class="form-control" name="region" id="region">
+                                                        <option value=""></option>
+                                                        @foreach(\App\JobRegion::get() as $jobRegion)
+                                                            <option @if(request()->region==$jobRegion->id) selected @endif value="{{ $jobRegion->id }}">{{ $jobRegion->name }}</option>
+                                                        @endforeach
+                                                    </select>
 
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <label for="creator" class="control-label">@lang('site.creator')</label>
+                                                    <select  class="form-control" name="creator" id="creator">
+                                                        <option value=""></option>
+                                                        @foreach(\App\User::where('role_id', 2)->orderBy('name')->get() as $user)
+                                                            <option @if(request()->creator==$user->id) selected @endif value="{{ $user->id }}">{{ $user->name }}</option>
+                                                        @endforeach
+                                                    </select>
+
+                                                </div>
+                                            </div>
 
 
 
@@ -139,6 +163,7 @@
                                     <tr>
                                         <th>#</th>
                                         <th>@lang('site.name')</th>
+                                        <th>@lang('site.region')</th>
                                         <th>@lang('site.creator')</th>
                                         <th>@lang('site.applications')</th>
                                         <th>@lang('site.added-on')</th>
@@ -152,6 +177,7 @@
                                     <tr>
                                         <td>{{ $loop->iteration + ( (Request::get('page',1)-1) *$perPage) }}</td>
                                         <td>{{ $item->title }}</td>
+                                        <td>{{ $item->getRegion()? $item->getRegion()->name : null }}</td>
                                         <td>{{ $item->user? $item->user->name : "Admin" }}</td>
                                         <td>{{ $item->applications()->count() }}</td>
                                         <td>{{ \Illuminate\Support\Carbon::parse($item->created_at)->format('d/M/Y') }}</td>

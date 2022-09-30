@@ -8,7 +8,7 @@
 
     @section('breadcrumb')
 
-                        <li class="breadcrumb-item"><a href="{{ route('vacancies') }}">@lang('site.vacancies')</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('employer.allvacancies') }}">@lang('site.vacancies')</a></li>
                         <li class="breadcrumb-item active" aria-current="page">@lang('site.vacancy-details')</li>
 
 
@@ -38,7 +38,6 @@
                     @endforeach
                 </ul>
             </p><hr>
-            <a onclick="return confirm('@lang('site.confirm-application')')" href="{{ route('candidate.vacancy.apply',['vacancy'=>$vacancy->id]) }}" class="card-link btn btn-primary btn-block">@lang('site.apply')</a>
         </div>
     </div>
 

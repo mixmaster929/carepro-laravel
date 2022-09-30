@@ -20,6 +20,29 @@
     {!! clean( $errors->first('location', '<p class="help-block">:message</p>') ) !!}
 </div>
 
+<div class="form-group {{ $errors->has('regions') ? 'has-error' : ''}}">
+    <label for="regions">@lang('site.job-regions')</label>
+    @if($formMode === 'edit')
+        <select multiple name="regions[]" id="regions" class="form-control select2">
+            <option></option>
+            @foreach(\App\JobRegion::orderBy('name')->get() as $region)
+                <option  @if( (is_array(old('regions')) && in_array(@$region->id,old('regions')))  || (null === old('regions')  && $vacancy->jobRegions()->where('id',$region->id)->first() ))
+                    selected
+                    @endif
+                    value="{{ $region->id }}">{{ $region->name }}</option>
+            @endforeach
+        </select>
+    @else
+        <select  multiple name="regions[]" id="regions" class="form-control select2">
+            <option></option>
+            @foreach(\App\JobRegion::orderBy('name')->get() as $region)
+                <option @if(is_array(old('regions')) && in_array(@$region->id,old('regions'))) selected @endif value="{{ $region->id }}">{{ $region->name }}</option>
+            @endforeach
+        </select>
+    @endif
+    {!! clean( $errors->first('regions', '<p class="help-block">:message</p>') ) !!}
+</div>
+
 <div class="form-group {{ $errors->has('salary') ? 'has-error' : ''}}">
     <label for="salary" class="control-label">@lang('site.salary')</label>
     <input  class="form-control" name="salary" type="text" id="salary" value="{{ old('salary',isset($vacancy->salary) ? $vacancy->salary : '') }}" >

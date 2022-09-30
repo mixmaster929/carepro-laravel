@@ -19,4 +19,16 @@ class Vacancy extends Model
     public function user(){
         return $this->belongsTo(User::class);
     }
+
+    public function jobRegions(){
+        return $this->belongsToMany(JobRegion::class);
+    }
+
+    public function getRegion() {
+        return $this->belongsToMany(JobRegion::class)->first();
+    }
+
+    public function getCategory(){
+        return $this->belongsToMany(JobCategory::class)->first();
+    }
 }

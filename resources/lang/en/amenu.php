@@ -53,6 +53,7 @@ return [
 
     //emails
     'emails'=>'Emails',
-    'email'=>'Email'
+    'email'=>'Email',
+    'regions' => 'Regions'
 
 ];

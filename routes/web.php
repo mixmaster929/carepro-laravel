@@ -176,6 +176,7 @@ Route::group(['middleware'=>['auth','admin',\App\Http\Middleware\UserLimit::clas
 
     //vacancy routes
     Route::resource('job-categories', 'JobCategoriesController');
+    Route::resource('job-regions', 'JobRegionsController');
     Route::resource('vacancies', 'VacanciesController');
 
     Route::resource('applications', 'ApplicationsController');
@@ -351,6 +352,8 @@ Route::group(['middleware'=>['employer'],'prefix' => 'employer', 'as' => 'employ
     Route::post('update-profile','ProfileController@update')->name('save-profile');
 
     Route::resource('vacancies', 'VacanciesController')->except(['destroy']);
+    Route::get('allvacancies', 'VacanciesController@myVacancies')->name('allvacancies');
+    Route::get('view-vacancies/{vacancy}','VacanciesController@view')->name('view-vacancy');
 
     Route::get('candidates/search','CandidatesController@search')->name('candidates.search');
 

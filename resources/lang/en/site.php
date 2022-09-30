@@ -330,7 +330,7 @@ return [
     'invoice-category'=>'Invoice Category',
     'job-categories'=>'Job Categories',
     'job-category'=>'Job Category',
-    'view-vacancies'=>'View Vacancies',
+    'view-vacancies'=>'View All Vacancies',
     'create-vacancy'=>'Create Vacancy',
     'vacancies'=>'Vacancies',
     'applications'=>'Applications',
@@ -896,5 +896,8 @@ return [
     'notification_placement_to_admin' => 'Employer :employer has placed candidate :candidate',
     'create-vacancy_to_admin' => 'Employer :name has made a vacancy :title, Location :location, Date application :closes_at',
     'apply_vacancy' => 'Apply Vacancy',
-    'apply_vacancy_to_admin' => 'Candidate :name has applied to Vacancy :title, Location :location, Date application :closes_at, login to see the application <a href=":application-records">:application-records</a>'
+    'apply_vacancy_to_admin' => 'Candidate :name has applied to Vacancy :title, Location :location, Date application :closes_at, login to see the application <a href=":application-records">:application-records</a>',
+    'job-regions'=>'Job Regions',
+    'all-regions' => "Region's",
+    'view-my-vacancies' => "View My's Vacancies",
 ];

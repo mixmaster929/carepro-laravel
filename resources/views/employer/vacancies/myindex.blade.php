@@ -1,13 +1,15 @@
 @extends($userLayout)
 
-@section('page-title',$title)
+@section('page-title')
+	{{ __('site.all-vacancies') }}
+@endsection
 
 @section('content')
 
     @section('category-select')
     <div class="row int_mb30px"  >
         <div class="col-md-4 offset-4">
-            <form name="regionForm" id="regionForm" action="{{ route('vacancies') }}" method="get">
+            <form name="regionForm" id="regionForm" action="{{ route('employer.allvacancies') }}" method="get">
                 <select class="form-control" name="region" id="region" onchange="$('#regionForm').submit()">
                     <option value="">@lang('site.all-regions')</option>
                     @foreach($regions as $region)
@@ -18,7 +20,7 @@
         </div>
     
         <div class="col-md-4">
-            <form name="categoryForm" id="categoryForm" action="{{ route('vacancies') }}" method="get">
+            <form name="categoryForm" id="categoryForm" action="{{ route('employer.allvacancies') }}" method="get">
                 <select class="form-control" name="category" id="category" onchange="$('#categoryForm').submit()">
                     <option value="">@lang('site.all-vacancies')</option>
                     @foreach($categories as $category)
@@ -41,7 +43,6 @@
             <th>@lang('site.category')</th>
             <th>@lang('site.location')</th>
             <th>@lang('site.salary')</th>
-            <th></th>
         </tr>
         </thead>
         <tbody>
@@ -73,7 +74,7 @@
                     </td>
                     <td>{{ $vacancy->location }}</td>
                     <td>{{ $vacancy->salary }}</td>
-                    <td><a class="btn btn-primary rounded" href="{{ route('view-vacancy',['vacancy'=>$vacancy->id]) }}">@lang('site.details')</a></td>
+					<td><a class="btn btn-primary rounded" href="{{ route('employer.view-vacancy',['vacancy'=>$vacancy->id]) }}">@lang('site.details')</a></td>
                 </tr>
             @endforeach
         </tbody>

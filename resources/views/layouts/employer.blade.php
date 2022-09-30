@@ -75,7 +75,8 @@
             <li class="nav-item">
                 <a href="#" class="nav-link with-sub"><i class="fa fa-clipboard-list"></i>&nbsp; @lang('site.vacancies')</a>
                 <ul class="nav-sub">
-                    <li class="nav-sub-item"><a href="{{ route('employer.vacancies.index') }}" class="nav-sub-link">@lang('site.view-vacancies')</a></li>
+                    <li class="nav-sub-item"><a href="{{ route('employer.allvacancies') }}" class="nav-sub-link">@lang('site.view-vacancies')</a></li>
+                    <li class="nav-sub-item"><a href="{{ route('employer.vacancies.index') }}" class="nav-sub-link">@lang('site.view-my-vacancies')</a></li>
                     <li class="nav-sub-item"><a href="{{ route('employer.vacancies.create') }}" class="nav-sub-link">@lang('site.create-vacancy')</a></li>
                 </ul>
             </li><!-- nav-item -->

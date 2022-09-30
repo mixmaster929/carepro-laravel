@@ -290,6 +290,12 @@
                                 </li>
                                 @endcan
 
+                                @can('access','view_vacancy_categories')
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.job-regions.index') }}" class="nav-link">@lang('amenu.regions')</a>
+                                </li>
+                                @endcan
+
                             </ul>
                         </div>
                     </li>

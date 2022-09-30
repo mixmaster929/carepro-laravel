@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Candidate;
 use App\Application;
 use App\Http\Controllers\Controller;
 use App\JobCategory;
+use App\JobRegion;
 use App\Lib\HelperTrait;
 use App\Vacancy;
 use Carbon\Carbon;
@@ -33,14 +34,25 @@ class VacanciesController extends Controller
             $title .= ': '.JobCategory::find($params['category'])->name;
         }
 
-        $vacancies = $vacancies->paginate($perPage);
-        $categories = JobCategory::orderBy('sort_order')->get();
+        if(isset($params['region']) && JobRegion::find($params['region']) )
+        {
 
-        if(isCandidate()){
-            return view('candidate.vacancies.index',compact('vacancies','perPage','title','categories'));
+            //$vacancies = $vacancies->where('invoice_category_id',$params['category']);
+            $vacancies = $vacancies->whereHas('jobRegions',function($query) use($params){
+                $query->where('id',$params['region']);
+            });
+            $title .= ': '.JobRegion::find($params['region'])->name;
         }
 
-        return tview('candidate.vacancies.index',compact('vacancies','perPage','title','categories'));
+        $vacancies = $vacancies->paginate($perPage);
+        $categories = JobCategory::orderBy('sort_order')->get();
+        $regions = JobRegion::orderBy('sort_order')->get();
+
+        if(isCandidate()){
+            return view('candidate.vacancies.index',compact('vacancies','perPage','title','categories', 'regions'));
+        }
+
+        return tview('candidate.vacancies.index',compact('vacancies','perPage','title','categories', 'regions'));
     }
 
     public function view(Vacancy $vacancy){

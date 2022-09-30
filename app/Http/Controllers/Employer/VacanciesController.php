@@ -8,6 +8,8 @@ use App\Vacancy;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use App\Lib\HelperTrait;
+use App\JobCategory;
+use App\JobRegion;
 
 class VacanciesController extends Controller
 {
@@ -17,6 +19,57 @@ class VacanciesController extends Controller
      *
      * @return \Illuminate\View\View
      */
+
+    public function view(Vacancy $vacancy){
+        $this->validateVacancy($vacancy);
+        
+        return tview('employer.vacancies.view',compact('vacancy'));
+    }
+
+    private function validateVacancy(Vacancy $vacancy){
+        if(empty($vacancy->active)){
+            abort(403);
+        }
+
+        if(Carbon::parse($vacancy->closes_at)->lessThanOrEqualTo(Carbon::now())){
+            abort(403);
+        }
+    }
+
+    public function myvacancies(Request $request){
+        $perPage = 24;
+        $params = $request->all();
+        $title= __('site.vacancies');
+        $vacancies = Vacancy::latest()->where('active',1)->where(function($q){
+            $q->where('closes_at','>',Carbon::now()->toDateTimeString())->orWhere('closes_at','');
+        });
+
+        if(isset($params['category']) && JobCategory::find($params['category']) )
+        {
+
+            //$vacancies = $vacancies->where('invoice_category_id',$params['category']);
+            $vacancies = $vacancies->whereHas('jobCategories',function($query) use($params){
+                $query->where('id',$params['category']);
+            });
+            $title .= ': '.JobCategory::find($params['category'])->name;
+        }
+
+        if(isset($params['region']) && JobRegion::find($params['region']) )
+        {
+
+            //$vacancies = $vacancies->where('invoice_category_id',$params['category']);
+            $vacancies = $vacancies->whereHas('jobRegions',function($query) use($params){
+                $query->where('id',$params['region']);
+            });
+            $title .= ': '.JobRegion::find($params['region'])->name;
+        }
+
+        $vacancies = $vacancies->paginate($perPage);
+        $categories = JobCategory::orderBy('sort_order')->get();
+        $regions = JobRegion::orderBy('sort_order')->get();
+
+        return tview('employer.vacancies.myindex',compact('vacancies','perPage','title','categories', 'regions'));
+    }
     public function index(Request $request)
     {
         // $this->authorize('access','view_vacancies');
@@ -106,6 +159,10 @@ class VacanciesController extends Controller
             $vacancy->jobCategories()->attach($requestData['categories']);
         }
 
+        if (isset($requestData['regions'])){
+            $vacancy->jobRegions()->attach($requestData['regions']);
+        }
+
         $subject = __('site.create-vacancy');
         $message = __('site.create-vacancy_to_admin',[
             'name'=>$user->name,
@@ -165,6 +222,7 @@ class VacanciesController extends Controller
         $vacancy = Vacancy::findOrFail($id);
         $vacancy->update($requestData);
         $vacancy->jobCategories()->sync($request->categories);
+        $vacancy->jobRegions()->sync($request->regions);
 
         return redirect('employer/vacancies')->with('flash_message', __('site.changes-saved'));
     }

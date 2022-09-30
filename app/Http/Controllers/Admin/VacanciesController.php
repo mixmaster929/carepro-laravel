@@ -23,7 +23,9 @@ class VacanciesController extends Controller
         $perPage = 25;
 
         if (!empty($keyword)) {
-            $vacancies = Vacancy::whereRaw("match(title,description) against (? IN NATURAL LANGUAGE MODE)", [$keyword]);
+            $vacancies = Vacancy::whereHas('user',function($query) use($keyword){
+                $query->whereRaw("match(name) against (? IN NATURAL LANGUAGE MODE)", [$keyword]);
+            })->orWhereRaw("match(title,description) against (? IN NATURAL LANGUAGE MODE)", [$keyword]);
         } else {
             $vacancies = Vacancy::latest();
         }
@@ -57,6 +59,20 @@ class VacanciesController extends Controller
                 $query->where('id',$params['category']);
             });
 
+        }
+
+        if(isset($params['region']) && $params['region'] != '' )
+        {
+            $vacancies = $vacancies->whereHas('jobRegions',function($query) use($params){
+                $query->where('id',$params['region']);
+            });
+        }
+
+        if(isset($params['creator']) && $params['creator'] != '' )
+        {
+            $vacancies = $vacancies->whereHas('user',function($query) use($params){
+                $query->where('id',$params['creator']);
+            });
         }
 
         unset($params['search'],$params['page'],$params['field_id']);
@@ -99,6 +115,10 @@ class VacanciesController extends Controller
         $vacancy = Vacancy::create($requestData);
         if (isset($requestData['categories'])){
             $vacancy->jobCategories()->attach($requestData['categories']);
+        }
+
+        if (isset($requestData['regions'])){
+            $vacancy->jobRegions()->attach($requestData['regions']);
         }
 
 
@@ -151,6 +171,10 @@ class VacanciesController extends Controller
         $vacancy = Vacancy::findOrFail($id);
         $vacancy->update($requestData);
         $vacancy->jobCategories()->sync($request->categories);
+        $vacancy->jobRegions()->sync($request->regions);
+        // if (isset($requestData['regions'])){
+        //     $vacancy->jobRegions()->attach($requestData['regions']);
+        // }
 
         return redirect('admin/vacancies')->with('flash_message', __('site.changes-saved'));
     }
