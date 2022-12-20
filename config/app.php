@@ -161,6 +161,7 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
+        Weidner\Goutte\GoutteServiceProvider::class,
 
         /*
          * Package Service Providers...
@@ -229,6 +230,7 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'PDF' => Barryvdh\DomPDF\Facade::class,
         'Captcha' => Mews\Captcha\Facades\Captcha::class,
+        'Goutte' => Weidner\Goutte\GoutteFacade::class,
 
     ],
     'mode'=>env('APP_MODE','hosted'),

@@ -46,7 +46,14 @@
                                         <div class="row">
                                         <div class=" col-md-6 {{ $errors->has('name') ? 'has-error' : ''}}">
                                             <label for="name" class="control-label">@lang('site.name')</label>
-                                           <div>{{ $employer->name }}</div>
+                                            <div>{{ $employer->name }}</div>
+                                            @if($kvk_flag)
+                                                <img src="{{ asset('img/kvk/kvk32.png') }}" class="int_txcen" />
+                                            @endif
+                                            <img src="{{ asset('img/kvk/niwo32.png') }}" class="int_txcen" />
+                                            @if($paychecked_flag)
+                                                <img src="{{ asset('img/kvk/pay32.png') }}" class="int_txcen" />
+                                            @endif
                                         </div>
                                             <div class="col-md-6 {{ $errors->has('gender') ? 'has-error' : ''}}">
                                                 <label for="gender" class="control-label">@lang('site.gender')</label>

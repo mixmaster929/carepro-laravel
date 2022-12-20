@@ -18,6 +18,7 @@ return [
     'general_vat' => '% VAT',
     'general_tax_number' => 'Tax Number',
     'general_chamber_of_commerce' => 'Chamber of Commerce',
+    'general_client_number' => 'Next User Client Number?',
     'image_logo'=>'Logo',
     'image_icon'=>'Icon',
     'mail_protocol'=>'Protocol',

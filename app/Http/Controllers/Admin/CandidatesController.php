@@ -19,6 +19,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
 use ParseCsv\Csv;
+use Illuminate\Support\Facades\Http;
+use Goutte\Client;
 
 class CandidatesController extends Controller
 {
@@ -497,7 +499,34 @@ class CandidatesController extends Controller
         $this->authorize('access','view_candidate');
         $candidate = User::findOrFail($id);
 
-        return view('admin.candidates.show', compact('candidate'));
+        $kvk_flag = false;
+        $KvK = $candidate->candidateFields()->where('name','KvK Handelsregister')->first()? $candidate->candidateFields()->where('name','KvK Handelsregister')->first()->pivot->value : "";
+        $apiKey = "l7194f0c28d6844efd8d4ae8ea83604836";
+        $prodKvKApi = "https://api.kvk.nl/api/v1/zoeken?";
+        $prodPayCheckedApi = "https://www.paychecked.nl/register/?Bedrijfsnaam=&Bedrijfsplaats=&KvK=";
+        
+        // PayChecked
+        $crawler = new Client();
+        $crawler = $crawler->request('GET', $prodPayCheckedApi.$KvK);
+        $result = NULL;
+
+        $paychecked_flag = false;
+        $crawler->filter('h2')->each(function ($node) use (&$result) {
+            $result = $node->text();
+        });
+        if($result != NULL)
+            $paychecked_flag = true;
+
+        // KVK
+        if($KvK){
+            $response = Http::get($prodKvKApi."apikey=".$apiKey."&kvkNummer=".$KvK);
+            if($response->status() == 200)
+            $kvk_flag = true;
+        }
+        
+
+
+        return view('admin.candidates.show', compact(['candidate', 'kvk_flag', 'paychecked_flag']));
     }
 
     /**

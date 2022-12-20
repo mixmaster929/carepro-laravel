@@ -44,15 +44,22 @@
                                     <div class="card-body">
 
                                         <div class="row">
-                                        <div class=" col-md-6 {{ $errors->has('name') ? 'has-error' : ''}}">
-                                            <label for="name" class="control-label">@lang('site.name')</label>
-                                           <div>{{ $candidate->name }}</div>
+                                            <div class=" col-md-6 {{ $errors->has('name') ? 'has-error' : ''}}">
+                                                <label for="name" class="control-label">@lang('site.name')</label>
+                                                <div>{{ $candidate->name }}</div>
+                                                @if($kvk_flag)
+                                                    <img src="{{ asset('img/kvk/kvk32.png') }}" class="int_txcen" />
+                                                @endif
+                                                <img src="{{ asset('img/kvk/niwo32.png') }}" class="int_txcen" />
+                                                @if($paychecked_flag)
+                                                    <img src="{{ asset('img/kvk/pay32.png') }}" class="int_txcen" />
+                                                @endif
+                                            </div>
+                                            <div class="col-md-6 {{ $errors->has('display_name') ? 'has-error' : ''}}">
+                                                <label for="display_name" class="control-label">@lang('site.display-name')</label>
+                                                <div>{{ $candidate->candidate->display_name }}</div>
+                                            </div>
                                         </div>
-                                        <div class="col-md-6 {{ $errors->has('display_name') ? 'has-error' : ''}}">
-                                            <label for="display_name" class="control-label">@lang('site.display-name')</label>
-                                            <div>{{ $candidate->candidate->display_name }}</div>
-                                        </div>
-                                    </div>
 
                                         <div class="row">
                                         <div class="col-md-6 {{ $errors->has('email') ? 'has-error' : ''}}">
