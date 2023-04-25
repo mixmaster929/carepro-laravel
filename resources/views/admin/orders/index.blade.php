@@ -169,6 +169,9 @@
                                 <tbody>
                                 @foreach($orders as $item)
                                     <tr>
+                                        <?php
+                                            $pivotData = $item->bids()->wherePivot('status', 'allow')->get();
+                                        ?>
                                         <td>{{ $item->id }}</td>
                                         <td>{{ $item->user->name }}</td>
                                         <td>{{ \Illuminate\Support\Carbon::parse($item->created_at)->format('d/M/Y') }}</td>
@@ -212,6 +215,10 @@
                                                     @can('access','delete_order')
                                                     <a class="dropdown-item" href="#" onclick="$('#deleteForm{{ $item->id }}').submit()">@lang('site.delete')</a>
                                                     @endcan
+                                                    
+                                                    @if($pivotData->count()>0)
+                                                    <a class="dropdown-item" href="{{ route('admin.order.cancel-allow',['order'=>$item->id]) }}">@lang('site.allow-cancel')</a>
+                                                    @endif
 
 
 

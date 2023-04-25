@@ -3,7 +3,7 @@
     <div id="azChatBody" class="az-chat-body">
         <div class="content-inner">
             @foreach($comments as $comment)
-            <div class="media @if($comment->user_id != $comment->order->user_id) flex-row-reverse @endif">
+            <div class="media @if($comment->user_id != $comment->employment->employer->user_id) flex-row-reverse @endif">
                 <div class="az-img-user "><img src="{{ userPic($comment->user_id) }}" alt="">
 
                 </div>
@@ -12,15 +12,15 @@
                         {!! clean( nl2br(clean($comment->content)) ) !!}
                     </div><!-- az-msg-wrapper -->
 
-                    @if($comment->orderCommentAttachments()->count()>0)
+                    @if($comment->employmentCommentAttachments()->count()>0)
                         <p  >
-                            <span><i class="fa fa-paperclip"></i> {{ $comment->orderCommentAttachments()->count() }} @if($comment->orderCommentAttachments()->count()>1) @lang('site.attachments') @else @lang('site.attachment') @endif - </span>
+                            <span><i class="fa fa-paperclip"></i> {{ $comment->employmentCommentAttachments()->count() }} @if($comment->employmentCommentAttachments()->count()>1) @lang('site.attachments') @else @lang('site.attachment') @endif - </span>
                             <a href="{{ route('candidate.placement-comments.download-attachments',['employmentComment'=>$comment->id]) }}" class="btn btn-default btn-xs">@lang('site.download-all') <i class="fa fa-file-zip-o"></i> </a>
                         </p>
 
                         <div class="row int_thpmwidth"  >
 
-                        @foreach($comment->orderCommentAttachments as $attachment)
+                        @foreach($comment->employmentCommentAttachments as $attachment)
                             <div class="col-md-12 int_tpmb"  >
                                 <a href="{{ route('candidate.placement-comments.download-attachment',['employmentCommentAttachment'=>$attachment->id]) }}">
 

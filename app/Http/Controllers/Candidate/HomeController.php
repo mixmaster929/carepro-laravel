@@ -6,13 +6,16 @@ use App\Http\Controllers\Controller;
 use App\Interview;
 use App\Invoice;
 use App\Candidate;
+use App\JobRegion;
 use App\Test;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 use App\Employment;
 use App\EmploymentComment;
 use App\EmploymentCommentAttachment;
+use App\Order;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
 use App\Lib\HelperTrait;
@@ -42,6 +45,7 @@ class HomeController extends Controller
         $user= Auth::user();
         $perPage = 30;
         $applications = $user->applications()->latest()->paginate($perPage);
+        // dd($application->interviews()->latest()->first()->interview_date);
         return view('candidate.home.applications',compact('applications','perPage'));
     }
 
@@ -68,7 +72,7 @@ class HomeController extends Controller
     }
 
     public function addComment(Request $request,Employment $employment){
-        Log::info("Request=>".$request);
+        // Log::info("Request=>".$request);
         // $this->authorize('view',$employment);
         $this->validate($request,[
             'content'=>'required'
@@ -275,5 +279,170 @@ class HomeController extends Controller
     public function viewInterview(Interview $interview)
     {
         return view('candidate.interview.view',compact('interview'));
+    }
+
+    public function orders()
+    {
+        $candidate = Auth::user();
+        $candidate_region = $candidate->candidateFields()->where('name','Actief in Regio')->first()? $candidate->candidateFields()->where('name','Actief in Regio')->first()->pivot->value : "";
+        $region = JobRegion::where('name', $candidate_region)->firstOrFail();
+        $allregion = JobRegion::where('name', "Alle Regio's")->firstOrFail();
+        // $userId = $candidate->id;
+        $orders = Order::whereIn('region_id', [$allregion->id, $region->id])->get();
+
+        // $offers = Order::whereHas('bids', function($q) use($userId){
+        //     $q->where('user_id',$userId);
+        // })->where('region_id', $region->id)->get();
+        // foreach($orders as $order){
+        //     dd($order->bids);
+        //     if(count($order->bids)>0 && Auth::user()->id === $order->bids[0]->pivot->user_id)
+        //     dd($orders);
+        // }
+        return view('candidate.orders.index', compact('orders'));
+    }
+
+    public function orderView(Order $order)
+    {
+        $user = Auth::user();
+        $user_ids = [$user->id, $order->user_id];
+
+        $comments = $order->orderComments()->whereIn('user_id', $user_ids)->latest()->paginate(30);
+        return view('candidate.orders.view', compact('order', 'comments'));
+    }
+
+    public function apply(Request $request){
+        
+        $order_id = $request->order_id;
+        $amount = $request->amount;
+        $user_id = Auth::user()->id;
+        $order = Order::find($order_id);
+
+        if(count($order->bids)>0 && ($user_id === $order->bids[0]->pivot->user_id) && $order->bids[0]->pivot->offer){
+            $order->bids()->syncWithPivotValues($user_id, ['offer' => $amount]);
+
+            //notify employers
+            $this->sendEmail($order->user->email, __('site.edit-offer'),__('site.edit-offer-msg-employer',[
+                'candidate' => Auth::user()->name,
+                'amount' => $amount
+            ]));
+            //notify canddiates
+            $this->sendEmail(Auth::user()->email, __('site.edit-offer'),__('site.edit-offer-msg-candidate',[
+                'employer' => $order->user->name,
+                'amount' => $amount
+            ]));
+        }
+        else{
+            $order->bids()->attach($user_id, ['offer' => $amount]);
+
+            //notify administrators
+            $this->notifyAdmins(__('site.new-offer'),__('site.new-offer-msg',[
+                'name' => Auth::user()->name,
+                'amount' => $amount,
+                'employer' => $order->user->name
+            ]));
+            //notify employers
+            $this->sendEmail($order->user->email, __('site.new-offer'),__('site.new-offer-msg-employer',[
+                'candidate' => Auth::user()->name,
+                'amount' => $amount
+            ]));
+            //notify canddiates
+            $this->sendEmail(Auth::user()->email, __('site.new-offer'),__('site.new-offer-msg-candidate',[
+                'employer' => $order->user->name,
+                'amount' => $amount
+            ]));
+        }
+
+        return redirect()->route('candidate.orders');
+    }
+
+    public function orderComments(Order $order){
+        // $this->authorize('view',$employment);
+        // $comments = $order->orderComments()->latest()->paginate(30);
+        $user = Auth::user();
+        $user_ids = [$user->id, $order->user_id];
+
+        $comments = $order->orderComments()->whereIn('user_id', $user_ids)->latest()->paginate(30);
+        return view('candidate.home.comments',compact('comments'));
+    }
+
+    public function orderAddComment(Request $request, Order $order, User $user){
+        // dd($request);
+        // Log::info("Request=>".$request);
+        // $this->authorize('view',$employment);
+        $this->validate($request,[
+            'content'=>'required'
+        ]);
+
+        $candidate_id = $user->id;
+        $employer_id = $order->user_id;
+
+        $requestData['user_id'] = $candidate_id;
+        $requestData['content'] = $request->content;
+        $orderComment= $order->orderComments()->create($requestData);
+
+        //notify employers
+        $this->sendEmail($order->user->email, __('site.new-comment'),__('site.new-comment-msg',[
+            'user1' => Auth::user()->name,
+            'user2' => $order->user->name,
+            'content' => $request->content,
+        ]));
+        // //notify canddiates
+        // $this->sendEmail(Auth::user()->email, __('site.new-comment'),__('site.new-comment-msg',[
+        //     'user2' => Auth::user()->name,
+        //     'user1' => $order->user,
+        //     'content' => $request->content,
+        // ]));
+
+        // $requestData['user_id'] = $employer_id;
+        // $orderComment= $order->orderComments()->create($requestData);
+
+        // $userId = Auth::user()->id;
+        // $employmentComment=  $employment->employmentComments()->create([
+        //     'user_id'=>$userId,
+        //     'content'=>$request->post('content')
+        // ]);
+
+        // $messageId = $request->post('msg_id');
+
+        // //check for any attachments
+        // $path = '../storage/tmp/'.$messageId;
+
+        // //scan directory for files
+        // if(is_dir($path)){
+
+
+        //     //$files = scandir($path);
+        //     $files = array_diff(scandir($path), array('.', '..'));
+
+        //     if(count($files) > 0){
+        //         //check for directory
+        //         $destDir = UPLOAD_PATH.'/'.COMMENT_ATTACHMENTS.'/'.$employmentComment->id;
+
+        //         if(!is_dir($destDir)){
+        //             rmkdir($destDir);
+        //         }
+
+        //         foreach($files as $value){
+        //             $newName = $destDir.'/'.$value;
+        //             $oldName = $path.'/'.$value;
+        //             rename($oldName,$newName);
+        //             //attach record
+        //             $employmentComment->employmentCommentAttachments()->create([
+        //                 'file_name'=>$value,
+        //                 'file_path'=>$newName
+        //             ]);
+        //         }
+        //     }
+        //     @rmdir($path);
+        // }
+
+        // $link = route('admin.employment-comments.index',['employment'=>$employment->id]);
+        // $subject = __('site.new-employment-comment');
+        // $message = __('site.new-placement-comment-msg',['name'=>Auth::user()->name,'employer'=>$employment->employer->user->name,'candidate'=>$employment->candidate->user->name,'comment'=>$request->post('content'),'link'=>$link]);
+
+
+        // $this->notifyAdmins($subject,$message,'view_employment');
+
+        return back()->with('flash_message',__('site.comment-saved'));
     }
 }

@@ -3,14 +3,23 @@
 namespace App\Http\Controllers\Employer;
 
 use App\Http\Controllers\Controller;
+use App\JobRegion;
 use App\Lib\HelperTrait;
 use App\Order;
 use App\OrderComment;
 use App\OrderCommentAttachment;
 use App\OrderField;
 use App\OrderForm;
+use App\User;
+use App\Employment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
+use App\Interview;
+use App\Mail\InterviewAlert;
+use Illuminate\Support\Facades\Mail;
 
 class OrderController extends Controller
 {
@@ -42,14 +51,15 @@ class OrderController extends Controller
             abort(404);
         }
         $cart = session()->get('cart');
-        return tview('employer.order.form',compact('cart','orderForm'));
+        $regions = JobRegion::orderBy('sort_order')->get();
+        return tview('employer.order.form',compact('cart','orderForm', 'regions'));
     }
 
     public function save(Request $request,OrderForm $orderForm)
     {
         $requestData = $request->all();
 
-
+        
 
 
         $rules = [];
@@ -143,6 +153,33 @@ class OrderController extends Controller
            'name'=>$order->user->name,
            'count'=> $order->candidates()->count()
         ]));
+        //notify employers
+        $this->sendEmail($order->user->email, __('site.new-order'),__('site.new-order-msg',[
+            'name'=>$order->user->name,
+            'count'=> $order->candidates()->count()
+        ]));
+        
+        $region = $order->jobRegion;
+        $emails = [];
+        $users = DB::table('users')->where('role_id', 3)->get();
+        if($region->id === 1){
+            foreach($users as $user){
+                $emails[] = $user->email;
+            }
+        }
+        else{
+            foreach($users as $user){
+                $candidate_region = User::find($user->id)->candidateFields()->where('name','Actief in Regio')->first()? User::find($user->id)->candidateFields()->where('name','Actief in Regio')->first()->pivot->value : "";
+                if($candidate_region === $region->name)
+                $emails[] = $user->email;
+            }
+        }
+        //notify employees
+        $this->sendEmail($emails, __('site.new-order'),__('site.new-order-msg',[
+            'name'=>$order->user->name,
+            'count'=> $order->candidates()->count()
+        ]));
+
         session()->remove('cart');
         if($orderForm->auto_invoice==1){
             $invoice=  $this->createInvoice($order->user_id,$orderForm->invoice_amount,$orderForm->invoice_title,$orderForm->invoice_description,null,null,$orderForm->invoice_category_id);
@@ -172,9 +209,167 @@ class OrderController extends Controller
         return view('employer.order.view',compact('order'));
     }
 
-    public function comments(Order $order){
+    public function offers(Order $order){
         $this->authorize('view',$order);
-        $comments = $order->orderComments()->latest()->paginate(30);
+        $perPage = 25;
+        
+        $offers = DB::table('order_user')->where('order_id', '=', $order->id)->get();
+
+        return view('employer.order.offer',compact('offers', 'order', 'perPage'));
+    }
+
+    public function allowOffer($id)
+    {
+        $offer = DB::table('order_user')->where('id', '=', $id)->first();
+        $order = Order::find($offer->order_id);
+        $order->bids()->syncWithPivotValues($offer->user_id, ['status' => 'allow']);
+        // $order->update(['status' => 'i']);
+        // $title = $offer->vacancy->title? $offer->vacancy->title : null;
+        // $name = $application->user->name? $application->user->name : null;
+        // $message = __('site.app_allowed',[
+        //     'title'=>$title,
+        //     'name'=> $name
+        // ]);
+        // $this->sendEmail($application->user->email, __('site.application'), $message);
+        return redirect('employer/offers/'.$offer->order_id)->with('flash_message', __('Status changes'));
+    }
+
+    public function denyOffer($id)
+    {
+        $offer = DB::table('order_user')->where('id', '=', $id)->first();
+        $order = Order::find($offer->order_id);
+        $order->bids()->syncWithPivotValues($offer->user_id, ['status' => 'deny']);
+        
+        return redirect('employer/offers/'.$offer->order_id)->with('flash_message', __('Status changes'));
+    }
+
+    public function shortlist(Order $order, User $user, Request $request){
+        $order->bids()->syncWithPivotValues($user->id, ['shortlisted' => $request->status]);
+
+        return back()->with('flash_message',__('site.changes-saved'));
+    }
+
+    public function createPlacement(Request $request, Order $order, User $user){
+        $employer = Auth::user();
+        
+        return view('employer.order.create-employment', compact(['order', 'employer', 'user']));
+    }
+
+    public function storePlacementt(Request $request){
+        // dd($request->all());
+        // $application_id = $request->application_id;
+        // $application = Application::find($application_id);
+
+        $this->validate($request,[
+            'employer_user_id'=>'required',
+            'user_id'=>'required',
+            'start_date'=>'required',
+            'active'=>'required'
+        ]);
+
+        $requestData = $request->all();
+        $requestData['employer_id'] = User::find($requestData['employer_user_id'])->employer->id;
+        $requestData['candidate_id'] = User::find($requestData['user_id'])->candidate->id;
+
+        Employment::create($requestData);
+
+        // $application->update(['status' => 'Placed']);
+        $order = Order::find($request->order_id);
+        $order->bids()->syncWithPivotValues($request->user_id, ['status' => 'Placed']);
+
+        $employer = User::find($requestData['employer_user_id']);
+        $candidate = User::find($requestData['user_id']);
+        $end_date = $request->end_date? $request->end_date : '';
+
+        $subject = __('site.make-placement');
+        $message = __('site.notification_placement_to_users',[
+            'candidate'=>$candidate->name,
+            'employer'=> $employer->name,
+            'start_date' => $requestData['start_date'],
+            'end_date' => $end_date
+        ]);
+        $admin_message = __('site.notification_placement_to_admin',[
+            'candidate'=>$candidate->name,
+            'employer'=> $employer->name,
+        ]);
+
+        $this->sendEmail($employer->email, $subject, $message);
+        $this->sendEmail($candidate->email, $subject, $message);
+        $this->sendEmail(setting('general_admin_email'), $subject, $admin_message);
+        
+        // try{
+        //     // Mail::to($interview->user->email)->send(New InterviewAlert($interview));
+        //     Mail::to($application->user->email)->send(New InterviewAlert($interview));
+        // }
+        // catch(\Exception $ex){
+        //     $this->warningMessage(__('site.mail-error').': '.$ex->getMessage());
+        // }
+
+        return redirect('employer/offers/'.$request->order_id)->with('flash_message', __('site.changes-saved'));
+    }
+
+    public function createInterview(Order $order, User $user){
+        $employer = Auth::user();
+        $candidate = $user;
+        // dd($employer);
+        return view('employer.order.interview-create', compact('order', 'employer', 'candidate'));
+    }
+
+    public function storeInterview(Request $request){
+        // dd($request);
+
+        $order_id = $request->order_id;
+
+        $this->validate($request,[
+            'user_id'=>'required',
+            'interview_date'=>'required'
+        ]);
+        $requestData = $request->all();
+
+        $requestData['hash'] = Str::random(30);
+
+        $interview= Interview::create($requestData);
+        
+        //sync candidates
+        if(!empty($request->candidate_id)){
+            $interview->candidates()->attach($requestData['candidate_id']);
+        }
+
+        $order = Order::find($order_id);
+        // $order->update(['status' => 'Interview Planned']);
+        // dd($order);
+        $order->bids()->syncWithPivotValues($request->candidate_id, ['status' => 'Interview Planned']);
+
+        $candidate = User::find($request->candidate_id);
+
+        //send mail to employer
+        if($interview->reminder==1){
+            try{
+                // Mail::to($interview->user->email)->send(New InterviewAlert($interview));
+                Mail::to($candidate->email)->send(New InterviewAlert($interview));
+            }
+            catch(\Exception $ex){
+                $this->warningMessage(__('site.mail-error').': '.$ex->getMessage());
+            }
+        }
+
+        return redirect('employer/offers/'.$order_id)->with('flash_message', __('site.changes-saved'));
+    }
+
+    public function offerComments($id){
+        $offer = DB::table('order_user')->where('id', '=', $id)->first();
+        $order = Order::find($offer->order_id);
+        $user = User::find($offer->user_id);
+        
+        return view('employer.order.candidate-employer-comments',compact('user', 'order'));
+    }
+
+    public function comments(Order $order, User $user){
+        $this->authorize('view',$order);
+        $user_ids = [$user->id, $order->user_id];
+
+        $comments = $order->orderComments()->whereIn('user_id', $user_ids)->latest()->paginate(30);
+
         return view('employer.order.comments',compact('comments'));
     }
 
@@ -195,6 +390,13 @@ class OrderController extends Controller
 
 
         $this->notifyAdmins($subject,$message,'view_order');
+
+        //notify canddiates
+        $this->sendEmail(User::find($request->candidate_id)->email, __('site.new-comment'),__('site.new-comment-msg',[
+            'user2' => User::find($request->candidate_id)->name,
+            'user1' => $order->user->name,
+            'content' => $request->post('content'),
+        ]));
 
         return back()->with('flash_message',__('site.comment-saved'));
     }

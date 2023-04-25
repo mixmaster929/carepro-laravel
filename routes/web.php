@@ -156,6 +156,7 @@ Route::group(['middleware'=>['auth','admin',\App\Http\Middleware\UserLimit::clas
 
 
     Route::resource('orders', 'OrdersController');
+    Route::get('cancel_allow/{order}', 'OrdersController@cancelAllow')->name('order.cancel-allow');
     Route::post('create-order','OrdersController@doCreate')->name('orders.do-create');
     Route::get('orders/create/{orderForm}','OrdersController@create')->name('orders.create');
     Route::post('orders/create/{orderForm}','OrdersController@store')->name('orders.store');
@@ -326,10 +327,21 @@ Route::group(['middleware'=>['employer'],'prefix' => 'employer', 'as' => 'employ
     Route::get('dashboard', 'HomeController@index')->name('dashboard');
     Route::get('orders','OrderController@orders')->name('orders');
     Route::get('orders/{order}','OrderController@view')->name('view-order');
-    Route::get('order-comments/{order}','OrderController@comments')->name('orders.comments');
+    Route::get('offers/{order}','OrderController@offers')->name('view-bids');
+    Route::put('offers/allow/{id}','OrderController@allowOffer')->name('offer.allow');
+    Route::put('offers/deny/{id}','OrderController@denyOffer')->name('offer.deny');
+    Route::get('shortlist-order/{order}/{user}','OrderController@shortlist')->name('order.shortlist');
+    Route::get('offer/create-placement/{order}/{user}','OrderController@createPlacement')->name('order.create-placement');
+    Route::post('offer/store-employment','OrderController@storePlacementt')->name('order.store-employment');
+    Route::get('offer-comments/{id}','OrderController@offerComments')->name('offers.comments');
+
+    Route::get('order-comments/{order}/{user}','OrderController@comments')->name('orders.comments');
     Route::post('order-comments/{order}','OrderController@addComment')->name('orders.add-comment');
     Route::get('order-comment/download-attachment/{orderCommentAttachment}','OrderController@downloadAttachment')->name('order-comments.download-attachment');
     Route::get('order-comment/download-attachments/{orderComment}','OrderController@downloadAttachments')->name('order-comments.download-attachments');
+
+    Route::get('offer/create-interview/{order}/{user}','OrderController@createInterview')->name('offer.create-interview');
+    Route::post('offer/store-interview','OrderController@storeInterview')->name('offer.store-interview');
 
     Route::get('placements','PlacementController@placements')->name('placements');
     Route::get('placements/{employment}','PlacementController@view')->name('view-placement');
@@ -429,6 +441,12 @@ Route::group(['middleware'=>['candidate'],'prefix' => 'candidate', 'as' => 'cand
     Route::get('candidate-remove-picture','HomeController@removePicture')->name('remove-picture');
     Route::get('candidate-remove-cv','HomeController@removeCv')->name('remove-cv');
 
+    Route::get('orders','HomeController@orders')->name('orders');
+    Route::get('orders/{order}','HomeController@orderView')->name('view-order');
+    Route::post('orders/bids','HomeController@apply')->name('offer-apply');
+
+    Route::get('order-comments/{order}','HomeController@orderComments')->name('order.comments');
+    Route::post('order-comments/{order}/{user}','HomeController@orderAddComment')->name('order.add-comment');
     
 });
 

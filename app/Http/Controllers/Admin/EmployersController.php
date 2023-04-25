@@ -19,6 +19,7 @@ use Intervention\Image\Facades\Image;
 use ParseCsv\Csv;
 use Illuminate\Support\Facades\Http;
 use Goutte\Client;
+use Symfony\Component\HttpClient\HttpClient;
 
 class EmployersController extends Controller
 {
@@ -271,13 +272,17 @@ class EmployersController extends Controller
         $employer = User::findOrFail($id);
 
         $kvk_flag = false;
+        $niwo_flag = false;
         $KvK = $employer->employerFields()->where('name', 'KvK nummer')->first()? $employer->employerFields()->where('name', 'KvK nummer')->first()->pivot->value : "";
+        // dd($KvK);
+        // $niwo = $employer->employerFields()->where('name','Eurovergunningsnummer')->first()? $candidate->candidateFields()->where('name','Eurovergunningsnummer')->first()->pivot->value : "";
         $apiKey = "l7194f0c28d6844efd8d4ae8ea83604836";
         $prodKvKApi = "https://api.kvk.nl/api/v1/zoeken?";
         $prodPayCheckedApi = "https://www.paychecked.nl/register/?Bedrijfsnaam=&Bedrijfsplaats=&KvK=";
 
         // PayChecked
-        $crawler = new Client();
+        // $crawler = new Client();
+        $crawler = new Client(HttpClient::create(['verify_peer' => false, 'verify_host' => false]));
         $crawler = $crawler->request('GET', $prodPayCheckedApi.$KvK);
         $result = NULL;
 
@@ -295,7 +300,7 @@ class EmployersController extends Controller
             $kvk_flag = true;
         }
 
-        return view('admin.employers.show', compact(['employer', 'kvk_flag', 'paychecked_flag']));
+        return view('admin.employers.show', compact(['employer', 'kvk_flag', 'paychecked_flag', 'niwo_flag']));
     }
 
     /**

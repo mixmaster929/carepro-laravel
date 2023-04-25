@@ -1138,7 +1138,7 @@ class CandidatesController extends Controller
     }
 
     public function tests(User $user){
-        $this->authorize('view', $user);
+        // $this->authorize('view', $user);
         $perPage = 30;
         $tests = $user->userTests()->paginate($perPage);
         return view('employer.candidates.tests',compact('tests','perPage','user'));

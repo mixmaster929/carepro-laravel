@@ -102,4 +102,8 @@ class User extends Authenticatable
         return $this->belongsToMany(Contract::class)->withPivot('signed');
     }
 
+    public function bids(){
+        return $this->belongsToMany(Order::class)->withPivot('offer', 'status');
+    }
+
 }

@@ -11,6 +11,17 @@
 
     <form id="wizardform" method="post" action="{{ route('order.save-form',['orderForm'=>$orderForm->id]) }}" enctype="multipart/form-data">
         @csrf
+        <section>
+            <div class="form-group {{ $errors->has('region_id') ? 'has-error' : ''}}">
+                <label for="region_id" class="control-label">@lang('site.region')</label>
+                <select name="region_id" class="form-control" id="region_id" >
+                    @foreach ($regions as $optionKey => $optionValue)
+                        <option value="{{ $optionValue->id }}" {{ ((null !== old('region_id',@$orderform->region_id)) && old('region_id',@$orderform->region_id) == $optionKey) ? 'selected' : ''}}>{{ $optionValue->name }}</option>
+                    @endforeach
+                </select>
+                {!! clean( $errors->first('enabled', '<p class="help-block">:message</p>') ) !!}
+            </div>
+        </section>
         <div id="form-container">
 
             @if(!empty($orderForm->description) && !request()->exists('nodesc'))
@@ -19,7 +30,7 @@
                     <p>{!! clean( $orderForm->description ) !!}</p>
                 </section>
 
-           @endif
+            @endif
 
 
 

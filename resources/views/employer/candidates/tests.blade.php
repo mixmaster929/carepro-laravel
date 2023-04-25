@@ -15,7 +15,7 @@
 @section('breadcrumb')
     @include('partials.breadcrumb',['crumbs'=>[
             [
-                'link'=> route('employer.candidates.index'),
+                'link'=> route('employer.tests.index'),
                 'page'=>__('site.candidates')
             ],
             [
@@ -72,7 +72,7 @@
                                 <div class="dropdown-menu">
                                     <!-- Dropdown menu links -->
                                     <a class="dropdown-item" href="{{ route('candidate.tests.result',['userTest'=>$item->id]) }}"><i class="fa fa-eye"></i> @lang('site.view-results')</a>
-                                    <a onclick="return confirm('@lang('site.confirm-delete')')" class="dropdown-item" href="{{ route('employer.tests.delete-result',['userTest'=>$item->id]) }}"><i class="fa fa-trash"></i> @lang('site.delete')</a>
+                                    
                                 </div>
                             </div>
                         </td>

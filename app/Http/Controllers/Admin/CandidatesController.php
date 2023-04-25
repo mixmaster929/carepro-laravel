@@ -21,6 +21,7 @@ use Intervention\Image\Facades\Image;
 use ParseCsv\Csv;
 use Illuminate\Support\Facades\Http;
 use Goutte\Client;
+use Symfony\Component\HttpClient\HttpClient;
 
 class CandidatesController extends Controller
 {
@@ -500,21 +501,26 @@ class CandidatesController extends Controller
         $candidate = User::findOrFail($id);
 
         $kvk_flag = false;
+        $niwo_flag = false;
         $KvK = $candidate->candidateFields()->where('name','KvK Handelsregister')->first()? $candidate->candidateFields()->where('name','KvK Handelsregister')->first()->pivot->value : "";
+        $niwo = $candidate->candidateFields()->where('name','Eurovergunningsnummer')->first()? $candidate->candidateFields()->where('name','Eurovergunningsnummer')->first()->pivot->value : "";
         $apiKey = "l7194f0c28d6844efd8d4ae8ea83604836";
         $prodKvKApi = "https://api.kvk.nl/api/v1/zoeken?";
         $prodPayCheckedApi = "https://www.paychecked.nl/register/?Bedrijfsnaam=&Bedrijfsplaats=&KvK=";
         
         // PayChecked
-        $crawler = new Client();
+        // $crawler = new Client();
+        $crawler = new Client(HttpClient::create(['verify_peer' => false, 'verify_host' => false]));
+
         $crawler = $crawler->request('GET', $prodPayCheckedApi.$KvK);
         $result = NULL;
 
-        $paychecked_flag = false;
+        $paychecked_flag = true;
         $crawler->filter('h2')->each(function ($node) use (&$result) {
             $result = $node->text();
         });
-        if($result != NULL)
+        // dd($KvK);
+        if($result)
             $paychecked_flag = true;
 
         // KVK
@@ -524,9 +530,14 @@ class CandidatesController extends Controller
             $kvk_flag = true;
         }
         
+        // Niwo
+        if($niwo){
+            $niwo_flag = true;
+        }
+        
 
 
-        return view('admin.candidates.show', compact(['candidate', 'kvk_flag', 'paychecked_flag']));
+        return view('admin.candidates.show', compact(['candidate', 'kvk_flag', 'paychecked_flag', 'niwo_flag']));
     }
 
     /**

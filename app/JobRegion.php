@@ -14,4 +14,8 @@ class JobRegion extends Model
     public function vacancies(){
         return $this->belongsToMany(Vacancy::class);
     }
+
+    public function orders(){
+        return $this->belongsToMany(Order::class);
+    }
 }

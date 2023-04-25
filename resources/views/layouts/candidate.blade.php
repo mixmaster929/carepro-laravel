@@ -59,6 +59,9 @@
                 <a href="{{ route('candidate.dashboard') }}" class="nav-link"><i class="fa fa-tachometer-alt"></i>&nbsp; @lang('site.dashboard')</a>
             </li><!-- nav-item -->
             <li class="nav-item">
+                <a href="{{ route('candidate.orders') }}" class="nav-link"><i class="fa fa-users"></i>&nbsp; @lang('site.orders')</a>
+            </li><!-- nav-item -->
+            <li class="nav-item">
                 <a href="{{ route('vacancies') }}" class="nav-link"><i class="fa fa-clipboard-list"></i>&nbsp; @lang('site.vacancies')</a>
             </li><!-- nav-item -->
             <li class="nav-item">

@@ -8,7 +8,7 @@
     ],
     "license": "MIT",
     "require": {
-        "php": "^7.2",
+        "php": "^7.2|8.1.4",
         "barryvdh/laravel-dompdf": "^0.8.5",
         "doctrine/dbal": "^2.9",
         "embed/embed": "^3.4",

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
-    protected $fillable = ['user_id','interview_date','status','interview_location','interview_time','comments','order_form_id'];
+    protected $fillable = ['region_id', 'user_id','interview_date','status','interview_location','interview_time','comments','order_form_id'];
 
     public function orderFields(){
         return $this->belongsToMany(OrderField::class)->withPivot(['value']);
@@ -30,5 +30,13 @@ class Order extends Model
 
     public function orderForm(){
         return $this->belongsTo(OrderForm::class);
+    }
+
+    public function jobRegion(){
+        return $this->belongsTo(JobRegion::class, 'region_id');
+    }
+
+    public function bids(){
+        return $this->belongsToMany(User::class)->withPivot('offer', 'status');
     }
 }

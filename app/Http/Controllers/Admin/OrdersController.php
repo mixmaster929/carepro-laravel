@@ -21,6 +21,17 @@ class OrdersController extends Controller
      *
      * @return \Illuminate\View\View
      */
+
+    public function cancelAllow(Order $order){
+        $order->update(['status' => 'p']);
+
+        $pivotData = $order->bids()->wherePivot('status', 'allow')->first();
+        $_pivotData= $order->bids()->syncWithPivotValues($pivotData->pivot->user_id, ['status' => 'pending']);
+        // dd($_pivotData);
+        
+
+        return redirect('admin/orders')->with('flash_message', __('site.changes-saved')); 
+    }
     public function index(Request $request)
     {
         $this->authorize('access','view_orders');

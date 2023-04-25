@@ -50,7 +50,9 @@
                                                 @if($kvk_flag)
                                                     <img src="{{ asset('img/kvk/kvk32.png') }}" class="int_txcen" />
                                                 @endif
-                                                <img src="{{ asset('img/kvk/niwo32.png') }}" class="int_txcen" />
+                                                @if($niwo_flag)
+                                                    <img src="{{ asset('img/kvk/niwo32.png') }}" class="int_txcen" />
+                                                @endif
                                                 @if($paychecked_flag)
                                                     <img src="{{ asset('img/kvk/pay32.png') }}" class="int_txcen" />
                                                 @endif
