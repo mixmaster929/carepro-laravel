@@ -10,15 +10,68 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Intervention\Image\Facades\Image;
+use Goutte\Client;
+use Symfony\Component\HttpClient\HttpClient;
+use App\User;
 
 class ProfileController extends Controller
 {
     public function profile(){
         $candidate = Auth::user();
+        $user = User::find($candidate->id);
+        $kvk_flag = false;
+        $niwo_flag = false;
+        $KvK = $user->candidateFields()->where('name','KvK Handelsregister')->first()? $user->candidateFields()->where('name','KvK Handelsregister')->first()->pivot->value : "";
+        $niwo = $user->candidateFields()->where('name','Eurovergunningsnummer')->first()? $user->candidateFields()->where('name','Eurovergunningsnummer')->first()->pivot->value : "";
+        $apiKey = "l7194f0c28d6844efd8d4ae8ea83604836";
+        $prodKvKApi = "https://api.kvk.nl/api/v1/zoeken?";
+        $prodPayCheckedApi = "https://www.paychecked.nl/register/?Bedrijfsnaam=&Bedrijfsplaats=&KvK=";
+        
+        // PayChecked
+        $crawler = new Client(HttpClient::create(['verify_peer' => false, 'verify_host' => false]));
+    
+        $crawler = $crawler->request('GET', $prodPayCheckedApi.$KvK);
+        $result = NULL;
+    
+        $paychecked_flag = false;
+        $crawler->filter('.total__header')->each(function ($node) use (&$result) {
+            $result = $node->text();
+        });
+    
+        if($result != "Aantal bedrijven: 0")
+            $paychecked_flag = true;
+    
+        // KVK
+        if($KvK){
+            $url = $prodKvKApi."apikey=".$apiKey."&kvkNummer=".$KvK;
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_CAINFO, 'F:/cert/cacert.pem');
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    
+            $data = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            
+            if(curl_errno($ch)) {
+                $kvk_flag = false;
+            } else {
+                if($httpCode == 200)
+                $kvk_flag = true;
+                else
+                $kvk_flag = false;
+            }
+    
+            curl_close ($ch);
+        }
+        
+        // Niwo
+        if($niwo){
+            $niwo_flag = true;
+        }
         if($candidate->candidate->locked==1){
             return back()->with('flash_message',__('site.profile-locked'));
         }
-        return view('candidate.profile.profile', compact('candidate'));
+        return view('candidate.profile.profile', compact('candidate', 'kvk_flag', 'paychecked_flag', 'niwo_flag'));
     }
 
     public function update(Request $request){

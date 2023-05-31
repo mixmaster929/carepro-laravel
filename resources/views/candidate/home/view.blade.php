@@ -66,7 +66,19 @@
 
                         <div id="collapseOne" class="collapse show"  role="tabpanel"  aria-labelledby="headingOne" data-parent="#accordionExample">
                             <div class="card-body">
-
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        @if($kvk_flag)
+                                            <img src="{{ asset('img/kvk/kvk32.png') }}" class="int_txcen" />
+                                        @endif
+                                        @if($niwo_flag)
+                                            <img src="{{ asset('img/kvk/niwo32.png') }}" class="int_txcen" />
+                                        @endif
+                                        @if($paychecked_flag)
+                                            <img src="{{ asset('img/kvk/pay32.png') }}" class="int_txcen" />
+                                        @endif
+                                    </div>
+                                </div>
                                 <div class="row">
                                     <div class=" col-md-6  form-group {{ $errors->has('name') ? 'has-error' : ''}}">
                                         <label for="name" class="control-label">@lang('site.name')</label>

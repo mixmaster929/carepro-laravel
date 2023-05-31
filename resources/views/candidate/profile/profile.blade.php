@@ -15,6 +15,19 @@
 
                     <div class="card-body">
                         <div class="row">
+                            <div class="form-group col-md-6">
+                                @if($kvk_flag)
+                                    <img src="{{ asset('img/kvk/kvk32.png') }}" class="int_txcen" />
+                                @endif
+                                @if($niwo_flag)
+                                    <img src="{{ asset('img/kvk/niwo32.png') }}" class="int_txcen" />
+                                @endif
+                                @if($paychecked_flag)
+                                    <img src="{{ asset('img/kvk/pay32.png') }}" class="int_txcen" />
+                                @endif
+                            </div>
+                        </div>
+                        <div class="row">
                             <div class="form-group col-md-6 {{ $errors->has('name') ? 'has-error' : ''}}">
                                 <label for="name" class="control-label"><span class="req">*</span>@lang('site.name')</label>
                                 <input required class="form-control" name="name" type="text" id="name" value="{{ old('name',isset($candidate->name) ? $candidate->name : '') }}" >

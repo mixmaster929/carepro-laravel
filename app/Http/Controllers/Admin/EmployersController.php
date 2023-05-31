@@ -275,7 +275,7 @@ class EmployersController extends Controller
         $niwo_flag = false;
         $KvK = $employer->employerFields()->where('name', 'KvK nummer')->first()? $employer->employerFields()->where('name', 'KvK nummer')->first()->pivot->value : "";
         // dd($KvK);
-        // $niwo = $employer->employerFields()->where('name','Eurovergunningsnummer')->first()? $candidate->candidateFields()->where('name','Eurovergunningsnummer')->first()->pivot->value : "";
+        $niwo = $employer->employerFields()->where('name','Eurovergunningsnummer')->first()? $employer->candidateFields()->where('name','Eurovergunningsnummer')->first()->pivot->value : "";
         $apiKey = "l7194f0c28d6844efd8d4ae8ea83604836";
         $prodKvKApi = "https://api.kvk.nl/api/v1/zoeken?";
         $prodPayCheckedApi = "https://www.paychecked.nl/register/?Bedrijfsnaam=&Bedrijfsplaats=&KvK=";
@@ -287,17 +287,44 @@ class EmployersController extends Controller
         $result = NULL;
 
         $paychecked_flag = false;
-        $crawler->filter('h2')->each(function ($node) use (&$result) {
+        $crawler->filter('.total__header')->each(function ($node) use (&$result) {
             $result = $node->text();
         });
-        if($result != NULL)
+        // dd($result);
+        if($result != "Aantal bedrijven: 0")
             $paychecked_flag = true;
 
         // KVK
         if($KvK){
-            $response = Http::get($prodKvKApi."apikey=".$apiKey."&kvkNummer=".$KvK);
-            if($response->status() == 200)
-            $kvk_flag = true;
+            // $response = Http::get($prodKvKApi."apikey=".$apiKey."&kvkNummer=".$KvK);
+            // if($response->status() == 200)
+            // $kvk_flag = true;
+
+            $url = $prodKvKApi."apikey=".$apiKey."&kvkNummer=".$KvK;
+
+            $ch = curl_init();
+            // curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+            curl_setopt($ch, CURLOPT_CAINFO, 'F:/cert/cacert.pem');
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+            $data = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            
+            if(curl_errno($ch)) {
+                $kvk_flag = false;
+            } else {
+                if($httpCode == 200)
+                $kvk_flag = true;
+                else
+                $kvk_flag = false;
+            }
+
+            curl_close ($ch);
+        }
+
+        if (!empty($niwo) && is_numeric($niwo)) {
+            $niwo_flag = true;
         }
 
         return view('admin.employers.show', compact(['employer', 'kvk_flag', 'paychecked_flag', 'niwo_flag']));

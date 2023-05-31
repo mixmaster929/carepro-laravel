@@ -29,7 +29,15 @@
                         <div>
                             <h5 class="az-profile-name">{{ $candidate->display_name }}</h5>
                             <p class="az-profile-name-text">@lang('site.age'): {{ getAge(\Illuminate\Support\Carbon::parse($candidate->date_of_birth)->timestamp) }}</p>
-
+                            @if($kvk_flag)
+                                <img src="{{ asset('img/kvk/kvk32.png') }}" class="int_txcen" />
+                            @endif
+                            @if($niwo_flag)
+                                <img src="{{ asset('img/kvk/niwo32.png') }}" class="int_txcen" />
+                            @endif
+                            @if($paychecked_flag)
+                                <img src="{{ asset('img/kvk/pay32.png') }}" class="int_txcen" />
+                            @endif
                         </div>
 
                     </div>

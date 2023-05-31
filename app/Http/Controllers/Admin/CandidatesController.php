@@ -22,11 +22,17 @@ use ParseCsv\Csv;
 use Illuminate\Support\Facades\Http;
 use Goutte\Client;
 use Symfony\Component\HttpClient\HttpClient;
+// use App\Exports\ScrapyExport;
+// use Excel;
+// use App\Scrapy;
 
 class CandidatesController extends Controller
 {
 
     use HelperTrait;
+    public function __construct(){
+        ini_set('max_execution_time', 6000); //3 minutes
+    }
     /**
      * Display a listing of the resource.
      *
@@ -497,8 +503,59 @@ class CandidatesController extends Controller
      */
     public function show($id)
     {
+        //Test codes
+        // $totals = [];
+        // $flag = null;
+        // $baseurl = "https://www.transportscanner.nl/user/";
+        // $baseurl = "https://www.transportscanner.nl/user/6725";
+        
+        // $crawler = new Client(HttpClient::create(['verify_peer' => false, 'verify_host' => false]));
+        
+        // for($i = 7501; $i <= 7700; $i ++){
+        //     $myurl = $baseurl.$i;
+        //     $crawler1 = $crawler->request('GET', $myurl);
+        //     $crawler1->filter('.um-form')->each(function ($node) use (&$flag) {
+        //         $flag = $node->text();
+        //     });
+            
+        //     // $crawler1 = $crawler->request('GET', $myurl);
+        //     if($flag){
+        //         // var_dump($i);
+        //         // var_dump($crawler1);
+        //         $crawler1->filter('#user_url-111')->each(function ($node) use ($i, &$totals) {
+        //             $totals[$i]['url'] = $node->text();
+        //         });
+        //         $crawler1->filter('.um-name')->each(function ($node) use ($i, &$totals) {
+        //             $totals[$i]['name'] = $node->text();
+        //         });
+        //         $crawler1->filter('#phone_number-111')->each(function ($node) use ($i, &$totals) {
+        //             $totals[$i]['number'] = $node->text();
+        //         });
+        //         $crawler1->filter('#billing_address_1-111')->each(function ($node) use ($i, &$totals) {
+        //             $totals[$i]['address'] = $node->text();
+        //         });
+        //         $crawler1->filter('#billing_city-111')->each(function ($node) use ($i, &$totals) {
+        //             $totals[$i]['city'] = $node->text();
+        //         });
+        //         $crawler1->filter('#KVK-111')->each(function ($node) use ($i, &$totals) {
+        //             $totals[$i]['kvk'] = $node->text();
+        //         });
+        //     }
+        // }
+        // $file_name = 'employees_'.date('Y_m_d_H_i_s').'.xlsx';
+        // return Excel::download(new ScrapyExport, $file_name);
+        // foreach($totals as $total){
+        //     // var_dump(isset($total['name']));
+        //     Scrapy::create(['url' => isset($total['url'])? $total['url'] : "", 'name' => isset($total['name'])? $total['name'] : "", 'number' => isset($total['number'])? $total['number'] : "", 'address' => isset($total['address'])? $total['address'] : "", 'city' => isset($total['city'])? $total['city'] : "", 'kvk' => isset($total['kvk'])? $total['kvk'] : ""]);
+        // }
+        // dd($totals);
+        // end
+
+
         $this->authorize('access','view_candidate');
         $candidate = User::findOrFail($id);
+
+        
 
         $kvk_flag = false;
         $niwo_flag = false;
@@ -515,23 +572,45 @@ class CandidatesController extends Controller
         $crawler = $crawler->request('GET', $prodPayCheckedApi.$KvK);
         $result = NULL;
 
-        $paychecked_flag = true;
-        $crawler->filter('h2')->each(function ($node) use (&$result) {
+        $paychecked_flag = false;
+        $crawler->filter('.total__header')->each(function ($node) use (&$result) {
             $result = $node->text();
         });
-        // dd($KvK);
-        if($result)
+        // dd($result);
+        if($result != "Aantal bedrijven: 0")
             $paychecked_flag = true;
 
         // KVK
         if($KvK){
-            $response = Http::get($prodKvKApi."apikey=".$apiKey."&kvkNummer=".$KvK);
-            if($response->status() == 200)
-            $kvk_flag = true;
+            // $response = Http::get($prodKvKApi."apikey=".$apiKey."&kvkNummer=".$KvK);
+            // if($response->status() == 200)
+            // $kvk_flag = true;
+
+            $url = $prodKvKApi."apikey=".$apiKey."&kvkNummer=".$KvK;
+
+            $ch = curl_init();
+            // curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+            curl_setopt($ch, CURLOPT_CAINFO, 'F:/cert/cacert.pem');
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+            $data = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            
+            if(curl_errno($ch)) {
+                $kvk_flag = false;
+            } else {
+                if($httpCode == 200)
+                $kvk_flag = true;
+                else
+                $kvk_flag = false;
+            }
+
+            curl_close ($ch);
         }
         
         // Niwo
-        if($niwo){
+        if (!empty($niwo) && is_numeric($niwo)) {
             $niwo_flag = true;
         }
         

@@ -177,7 +177,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
         Mews\Captcha\CaptchaServiceProvider::class,
-
+        Maatwebsite\Excel\ExcelServiceProvider::class
     ],
 
     /*
@@ -231,7 +231,7 @@ return [
         'PDF' => Barryvdh\DomPDF\Facade::class,
         'Captcha' => Mews\Captcha\Facades\Captcha::class,
         'Goutte' => Weidner\Goutte\GoutteFacade::class,
-
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class
     ],
     'mode'=>env('APP_MODE','hosted'),
     'upload_size'=>env('MAX_UPLOAD_SIZE','50000'),

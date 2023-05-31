@@ -71,6 +71,15 @@
                                     <div class=" col-md-6  form-group {{ $errors->has('name') ? 'has-error' : ''}}">
                                         <label for="name" class="control-label">@lang('site.name')</label>
                                         <div>{{ $candidate->name }}</div>
+                                        @if($kvk_flag)
+                                            <img src="{{ asset('img/kvk/kvk32.png') }}" class="int_txcen" />
+                                        @endif
+                                        @if($niwo_flag)
+                                            <img src="{{ asset('img/kvk/niwo32.png') }}" class="int_txcen" />
+                                        @endif
+                                        @if($paychecked_flag)
+                                            <img src="{{ asset('img/kvk/pay32.png') }}" class="int_txcen" />
+                                        @endif
                                     </div>
                                     <div class="col-md-6  form-group {{ $errors->has('display_name') ? 'has-error' : ''}}">
                                         <label for="display_name" class="control-label">@lang('site.display-name')</label>

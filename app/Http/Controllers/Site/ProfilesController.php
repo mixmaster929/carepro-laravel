@@ -11,6 +11,8 @@ use App\Lib\HelperTrait;
 use App\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Goutte\Client;
+use Symfony\Component\HttpClient\HttpClient;
 
 class ProfilesController extends Controller
 {
@@ -106,12 +108,72 @@ use HelperTrait;
 
         //get field groups
         $groups = CandidateFieldGroup::where('visible',1)->orderBy('sort_order')->get();
+        // dd($candidate);
+        // added kvk
+        $user = User::find($candidate->user_id);
+        // dd($candidate);
+        $kvk_flag = false;
+        $niwo_flag = false;
+        $KvK = $user->candidateFields()->where('name','KvK Handelsregister')->first()? $user->candidateFields()->where('name','KvK Handelsregister')->first()->pivot->value : "";
+        $niwo = $user->candidateFields()->where('name','Eurovergunningsnummer')->first()? $user->candidateFields()->where('name','Eurovergunningsnummer')->first()->pivot->value : "";
+        $apiKey = "l7194f0c28d6844efd8d4ae8ea83604836";
+        $prodKvKApi = "https://api.kvk.nl/api/v1/zoeken?";
+        $prodPayCheckedApi = "https://www.paychecked.nl/register/?Bedrijfsnaam=&Bedrijfsplaats=&KvK=";
+        
+        // PayChecked
+        // $crawler = new Client();
+        $crawler = new Client(HttpClient::create(['verify_peer' => false, 'verify_host' => false]));
 
-        if (isEmployer()){
-            return view('site.profiles.profile',compact('candidate','groups'));
+        $crawler = $crawler->request('GET', $prodPayCheckedApi.$KvK);
+        $result = NULL;
+
+        $paychecked_flag = false;
+        $crawler->filter('.total__header')->each(function ($node) use (&$result) {
+            $result = $node->text();
+        });
+        // dd($result);
+        if($result != "Aantal bedrijven: 0")
+            $paychecked_flag = true;
+
+        // KVK
+        if($KvK){
+            // $response = Http::get($prodKvKApi."apikey=".$apiKey."&kvkNummer=".$KvK);
+            // if($response->status() == 200)
+            // $kvk_flag = true;
+
+            $url = $prodKvKApi."apikey=".$apiKey."&kvkNummer=".$KvK;
+
+            $ch = curl_init();
+            // curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+            curl_setopt($ch, CURLOPT_CAINFO, 'F:/cert/cacert.pem');
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+            $data = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            
+            if(curl_errno($ch)) {
+                $kvk_flag = false;
+            } else {
+                if($httpCode == 200)
+                $kvk_flag = true;
+                else
+                $kvk_flag = false;
+            }
+
+            curl_close ($ch);
+        }
+        
+        // Niwo
+        if($niwo){
+            $niwo_flag = true;
         }
 
-        return tview('site.profiles.profile',compact('candidate','groups'));
+        if (isEmployer()){
+            return view('site.profiles.profile',compact('candidate','groups', 'kvk_flag', 'paychecked_flag', 'niwo_flag'));
+        }
+
+        return tview('site.profiles.profile',compact('candidate','groups', 'kvk_flag', 'paychecked_flag', 'niwo_flag'));
     }
 
     public function shortlistCandidate(Candidate $candidate){

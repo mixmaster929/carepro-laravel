@@ -20,6 +20,7 @@
         "laravel/tinker": "^2.0",
         "laravel/ui": "^3.0",
         "league/omnipay": "^3",
+        "maatwebsite/excel": "^3.1",
         "mashape/unirest-php": "^3.0",
         "mews/captcha": "^3.0",
         "mews/purifier": "^3.1",
@@ -27,7 +28,6 @@
         "parsecsv/php-parsecsv": "^1.2",
         "rachidlaasri/laravel-installer": "^4.1",
         "stripe/stripe-php": "^7.17",
-        "twilio/sdk": "^6.16",
         "weidner/goutte": "^2.2"
     },
     "require-dev": {
@@ -43,7 +43,10 @@
         "preferred-install": "dist",
         "sort-packages": true,
         "disable-tls": true,
-        "secure-http": false
+        "secure-http": false,
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
     },
     "extra": {
         "laravel": {

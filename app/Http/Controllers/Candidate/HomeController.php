@@ -20,7 +20,8 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
 use App\Lib\HelperTrait;
 use Illuminate\Support\Facades\Log;
-
+use Goutte\Client;
+use Symfony\Component\HttpClient\HttpClient;
 
 class HomeController extends Controller
 {
@@ -62,7 +63,55 @@ class HomeController extends Controller
         $candidate = $employment->candidate->user;
         $employer = $employment->employer->user;
         $msgId = Str::random(10);
-        return view('candidate.home.view',compact('employment','candidate', 'employer', 'msgId'));
+        $kvk_flag = false;
+        $niwo_flag = false;
+        $KvK = $employer->employerFields()->where('name', 'KvK nummer')->first()? $employer->employerFields()->where('name', 'KvK nummer')->first()->pivot->value : "";
+        $apiKey = "l7194f0c28d6844efd8d4ae8ea83604836";
+        $prodKvKApi = "https://api.kvk.nl/api/v1/zoeken?";
+        $prodPayCheckedApi = "https://www.paychecked.nl/register/?Bedrijfsnaam=&Bedrijfsplaats=&KvK=";
+
+        // PayChecked
+        $crawler = new Client(HttpClient::create(['verify_peer' => false, 'verify_host' => false]));
+        $crawler = $crawler->request('GET', $prodPayCheckedApi.$KvK);
+        $result = NULL;
+
+        $paychecked_flag = false;
+        $crawler->filter('.total__header')->each(function ($node) use (&$result) {
+            $result = $node->text();
+        });
+        if($result != "Aantal bedrijven: 0")
+            $paychecked_flag = true;
+
+        // KVK
+        if($KvK){
+            $url = $prodKvKApi."apikey=".$apiKey."&kvkNummer=".$KvK;
+
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_CAINFO, 'F:/cert/cacert.pem');
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+            $data = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            
+            if(curl_errno($ch)) {
+                $kvk_flag = false;
+            } else {
+                if($httpCode == 200)
+                $kvk_flag = true;
+                else
+                $kvk_flag = false;
+            }
+
+            curl_close ($ch);
+        }
+
+        // Niwo
+        if (!empty($niwo) && is_numeric($niwo)) {
+            $niwo_flag = true;
+        }
+
+        return view('candidate.home.view',compact('employment','candidate', 'employer', 'msgId', 'kvk_flag', 'paychecked_flag', 'niwo_flag'));
     }
 
     public function comments(Employment $employment){
