@@ -170,7 +170,7 @@
 
                     @endif
                 </div>
-                <div class="row">
+                <!-- <div class="row">
                     <?php
                     if($formMode=='edit' && isset($candidate)){
                         $value = old('cv_path',$candidate->candidate->cv_path);
@@ -230,7 +230,7 @@
 
 
                     </div>
-                </div>
+                </div> -->
 
                 <div class="row">
                     <div class="form-group col-md-12">

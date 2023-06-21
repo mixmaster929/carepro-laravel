@@ -917,5 +917,7 @@ return [
     'edit-offer-msg-candidate' => 'You sent a updated offer with € :amount to :employer',
     'new-comment' => 'New Comment',
     'new-comment-msg'=>':user1 just sent a new comment with :content to :user2',
-
+    'vacancy-locked'=>'Your profile has been locked from applying.',
+    'save-changes-vacancy'=>'Save Changes & Apply',
+    'changes-saved-vacancy'=>'Changes Saved and Applied',
 ];

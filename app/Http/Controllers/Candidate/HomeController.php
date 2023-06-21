@@ -366,7 +366,7 @@ class HomeController extends Controller
         $user_id = Auth::user()->id;
         $order = Order::find($order_id);
 
-        if(count($order->bids)>0 && ($user_id === $order->bids[0]->pivot->user_id) && $order->bids[0]->pivot->offer){
+        if(count($order->bids)>0 && ($user_id == $order->bids[0]->pivot->user_id) && $order->bids[0]->pivot->offer){
             $order->bids()->syncWithPivotValues($user_id, ['offer' => $amount]);
 
             //notify employers

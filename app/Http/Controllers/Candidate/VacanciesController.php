@@ -77,51 +77,60 @@ class VacanciesController extends Controller
         $this->validateVacancy($vacancy);
         //check if user has a cv
         $user = Auth::user();
-        $cv = $user->candidate->cv_path;
+        // dd($user);
+        // $cv = $user->candidate->cv_path;
 
         if(Application::where('user_id',$user->id)->where('vacancy_id',$vacancy->id)->first()){
 
             return back()->with('flash_message',__('site.already-applied'));
         }
-        if(!empty($cv) && file_exists($cv)){
-
-            Application::create([
-                'vacancy_id'=>$vacancy->id,
-                'user_id'=>$user->id,
-            ]);
-            return redirect()->route('candidate.vacancy.complete');
+        if($user->candidate->locked){
+            return back()->with('flash_message',__('site.vacancy-locked'));
+        }
+        else{
+            return redirect()->route('candidate.profile-vacancy', ['vacancy' => $vacancy]);
         }
 
-        if (isCandidate()){
-            return view('candidate.vacancies.apply',compact('vacancy'));
-        }
+        
+        // if(!empty($cv) && file_exists($cv)){
 
-        $subject = __('site.apply_vacancy');
-        $admin_link = route('admin.applications.index',['vacancy'=>$vacancy->id],true);
-        $employer_link = route('employer.applications.index',['vacancy'=>$vacancy->id],true);
-        $employer_message = __('site.apply_vacancy_to_admin',[
-            'name'=>$user->name,
-            'title'=> $vacancy->title,
-            'location' => $vacancy->location,
-            'closes_at' => $vacancy->closes_at,
-            'application-records' => $employer_link,
-        ]);
-        $admin_message = __('site.apply_vacancy_to_admin',[
-            'name'=>$user->name,
-            'title'=> $vacancy->title,
-            'location' => $vacancy->location,
-            'closes_at' => $vacancy->closes_at,
-            'application-records' => $employer_link,
-        ]);
-        if($vacancy->user){
-            $employer = $vacancy->user->email;
-            $this->sendEmail($employer, $subject, $employer_message);
-        }
+        //     Application::create([
+        //         'vacancy_id'=>$vacancy->id,
+        //         'user_id'=>$user->id,
+        //     ]);
+        //     return redirect()->route('candidate.vacancy.complete');
+        // }
 
-        $this->sendEmail(setting('general_admin_email'), $subject, $admin_message);
+        // if (isCandidate()){
+        //     return view('candidate.vacancies.apply',compact('vacancy'));
+        // }
+
+        // $subject = __('site.apply_vacancy');
+        // // $admin_link = route('admin.applications.index',['vacancy'=>$vacancy->id],true);
+        // $employer_link = route('employer.applications.index',['vacancy'=>$vacancy->id],true);
+        // $employer_message = __('site.apply_vacancy_to_admin',[
+        //     'name'=>$user->name,
+        //     'title'=> $vacancy->title,
+        //     'location' => $vacancy->location,
+        //     'closes_at' => $vacancy->closes_at,
+        //     'application-records' => $employer_link,
+        // ]);
+        // $admin_message = __('site.apply_vacancy_to_admin',[
+        //     'name'=>$user->name,
+        //     'title'=> $vacancy->title,
+        //     'location' => $vacancy->location,
+        //     'closes_at' => $vacancy->closes_at,
+        //     'application-records' => $employer_link,
+        // ]);
+        // if($vacancy->user){
+        //     $employer = $vacancy->user->email;
+        //     $this->sendEmail($employer, $subject, $employer_message);
+        // }
+
+        // $this->sendEmail(setting('general_admin_email'), $subject, $admin_message);
         
 
-        return tview('candidate.vacancies.apply',compact('vacancy'));
+        // return tview('candidate.vacancies.apply',compact('vacancy'));
     }
 
     public function submit(Vacancy $vacancy,Request $request){

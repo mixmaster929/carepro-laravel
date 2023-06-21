@@ -434,6 +434,9 @@ Route::group(['middleware'=>['candidate'],'prefix' => 'candidate', 'as' => 'cand
     Route::get('profile','ProfileController@profile')->name('profile');
     Route::post('update-profile','ProfileController@update')->name('save-profile');
 
+    Route::get('profile/{vacancy}','ProfileController@profileVacancy')->name('profile-vacancy');
+    Route::post('update-profile/{vacancy}','ProfileController@updateProfileVacancy')->name('save-profile-vacancy');
+
     Route::get('image','HomeController@showImage')->name('image');
     Route::get('download','HomeController@download')->name('download');
     Route::get('candidate-remove-file/{fieldId}','HomeController@removeFile')->name('remove-file');
