@@ -59,8 +59,6 @@ npm run build fails to minify
 This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
 
 Please check it!
-TRC20 USDT address
-https://tronscan.org/#/address/TXt5hNt8NEZSt9ftNAgvzZ4scLdNoWT1yG/transfers
-TXt5hNt8NEZSt9ftNAgvzZ4scLdNoWT1yG
+
 
 
