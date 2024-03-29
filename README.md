@@ -60,5 +60,7 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/tr
 
 Please check it!
 TRC20 USDT address
-https://tronscan.io/#/address/TLvRWnP93aKEUMZPFAzr6fbd6p5wMSaRT2/transfers
+https://tronscan.org/#/address/TXt5hNt8NEZSt9ftNAgvzZ4scLdNoWT1yG/transfers
+TXt5hNt8NEZSt9ftNAgvzZ4scLdNoWT1yG
+
 
